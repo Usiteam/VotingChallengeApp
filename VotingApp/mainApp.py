@@ -29,8 +29,8 @@ def index():
         email = form.email.data
         password = form.password.data
         user = User.get_by_email(email)
-        print(user, sys.stderr)
-        print(user.password, sys.stderr)
+        # print(user, sys.stderr)
+        # print(user.password, sys.stderr)
         if user is not None and user.check_password(password):
             login_user(user, False)
             return redirect(url_for('dashboard'))
@@ -38,14 +38,34 @@ def index():
             flash("Incorrect Email or Password")
             #return redirect(url_for('index'))
     elif request.method=='POST' and request.form['btn'] == 'Sign Up':
-        user = User(email=setForm.setEmail.data,
-                    firstName=setForm.firstName.data,
-                    lastName=setForm.lastName.data,
-                    password = setForm.setPassword.data)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('index'))
-    return render_template('index.html', form=form, setForm=setForm)
+        if validateSignUp():
+            user = User(email=setForm.setEmail.data,
+                        firstName=setForm.firstName.data,
+                        lastName=setForm.lastName.data,
+                        password = setForm.setPassword.data)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('index'))
+        return render_template('index.html', form=form, setForm=setForm, login="login-hide", signup="signup-show", login_active="", signup_active="active")
+    return render_template('index.html', form=form, setForm=setForm, login="login", signup="signup", login_active="active", signup_active="")
+
+def validateSignUp():
+    setForm = forms.SignUpForm()
+    ok = True
+    if User.query.filter_by(email=setForm.setEmail.data).first():
+        flash("User with email already exists")
+        ok = False
+    if setForm.setPassword.data != setForm.setPassword2.data:
+        flash("Passwords do NOT match")
+        ok = False
+    if (setForm.setEmail.data)[-10:] != "utexas.edu":
+        flash("Must use utexas.edu email")
+        ok = False
+    if not setForm.setEmail.data or not setForm.firstName.data or not setForm.lastName.data or not setForm.setPassword.data:
+        flash("All fields are required")
+        ok = False
+    return ok
+
 
 @app.route('/logout')
 def logout():

@@ -70,7 +70,13 @@ body{
   background: #1ab188;
   color: #ffffff;
 }
-.tab-content > div:last-child{
+/*.tab-content > div:last-child{
+    display: none;
+}*/
+#login-hide{
+    display: none;
+}
+#signup{
     display: none;
 }
 
