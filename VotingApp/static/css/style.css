@@ -24,6 +24,11 @@ a:hover {
 body{
     background-color: rgba(19, 35, 47, 0.9);
 }
+
+.flash{
+    font-size: 16px;
+    color: red;
+}
 .form {
   background: rgba(19, 35, 47, 0.9);
   padding: 40px;

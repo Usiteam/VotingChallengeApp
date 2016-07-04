@@ -14,11 +14,13 @@
     </head>
     <body>
 
-        {{ firstName }}
+        {% for ticker in stocks %}
+            {{ticker}}
+        {% endfor %}
         {{ lastName }}
 
         <!-- #main-container -->
-
+        <a href="{{url_for('logout')}}">Logout</a>
         <div class="footer-container">
             <footer class="wrapper">
                 <h3>footer</h3>

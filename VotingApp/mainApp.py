@@ -24,25 +24,43 @@ def load_user(userid):
 @app.route('/login', methods=['GET', 'POST'])
 def index():
     form = forms.LoginForm()
-    if request.method=="POST":
+    setForm = forms.SignUpForm()
+    if request.method=='POST' and request.form['btn'] == 'log in':
         email = form.email.data
         password = form.password.data
-        user = User.query.filter_by(email=email).first()
-        if user is not None:
+        user = User.get_by_email(email)
+        print(user, sys.stderr)
+        print(user.password, sys.stderr)
+        if user is not None and user.check_password(password):
             login_user(user, False)
-            flash("Stored '{}'".format(email))
             return redirect(url_for('dashboard'))
-    return render_template('index.html', form=form)
+        else:
+            flash("Incorrect Email or Password")
+            #return redirect(url_for('index'))
+    elif request.method=='POST' and request.form['btn'] == 'Sign Up':
+        user = User(email=setForm.setEmail.data,
+                    firstName=setForm.firstName.data,
+                    lastName=setForm.lastName.data,
+                    password = setForm.setPassword.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form, setForm=setForm)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
     print(current_user, sys.stderr)
-    return render_template('dashboard.html', firstName=current_user.stocks[0])
+    return render_template('dashboard.html', stocks=current_user.stocks)
 
 
 @app.route('/loggedin')
-@login_required
 def loggedin():
     return render_template('loggedin.html')
 if __name__ == '__main__':
