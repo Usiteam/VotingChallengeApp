@@ -1,5 +1,5 @@
 from __future__ import print_function # In python 2.7
-import sys, os
+import sys, os, operator
 from datetime import datetime
 from flask import Flask, render_template, request, flash, redirect, url_for
 import forms
@@ -85,19 +85,31 @@ def dashboard():
         totalStocks = len(student.stocks)
         ret = 0
         activeStocks = student.stocks
+
+        "Calculates returns on active positions"
         for stock in activeStocks:
             ret += (float(Share(stock.ticker).get_price()) - stock.startingPrice)/stock.startingPrice
+
+        "Calculates returns on sold positions"
         userTransactions = Transactions.query.filter_by(user_id=student.id)
         totalStocks += userTransactions.count()
-
         for trans in userTransactions:
             ret += (trans.end_price - trans.ticker.startingPrice)/trans.ticker.startingPrice
         returns[student.id] = ret/totalStocks
+    "Sorts the dictionary by returns"
+    ret_tups = sorted(returns.items(), key=operator.itemgetter(1), reverse=True)
+    "Finds leadboard position"
+    standing = 1
+    for userid, ret in ret_tups:
+        if userid is current_user.id:
+            break
+        standing += 1
+
     """Finished getting position"""
     prices = {}
     for stock in current_user.stocks:
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id])
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id], standing=standing)
 
 
 @app.route('/loggedin')
