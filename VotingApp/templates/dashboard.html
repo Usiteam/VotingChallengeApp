@@ -11,13 +11,49 @@
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+        <!-- Bootstrap CDN -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+
     </head>
     <body>
+        <div class="table-responsive">
+            <table class="table table-inverse">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>ticker</th>
+                  <th>Price Bought At</th>
+                  <th>Current Price</th>
+                  <th>Gain/Loss ($/share)</th>
+                  <th>% Gain/Loss</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% set count = 1 %}
+                  {% for ticker in stocks %}
+                  {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+                  <tr>
+                    <th scope="row">{{count}}</th>
+                    <td>{{ticker.ticker}}</td>
+                    <td>{{ticker.startingPrice}}</td>
+                    <td>{{prices[ticker.ticker]}}</td>
+                    <td>{{gain}}</td>
+                    <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
+                  </tr>
+                  {% set count = count+1 %}
+                  {% endfor %}
 
-        {% for ticker in stocks %}
-            {{ticker}}
-        {% endfor %}
-        {{ lastName }}
+              </tbody>
+          </table>
+      </div>
+
+        {{ totalReturn }}
 
         <!-- #main-container -->
         <a href="{{url_for('logout')}}">Logout</a>

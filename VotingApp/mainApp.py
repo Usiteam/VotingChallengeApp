@@ -5,8 +5,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from models import User, Tickers
+from models import User, Tickers, Transactions
 from VotingApp import db, app, login_manager
+from yahoo_finance import Share
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -77,7 +78,26 @@ def logout():
 @login_required
 def dashboard():
     print(current_user, sys.stderr)
-    return render_template('dashboard.html', stocks=current_user.stocks)
+    """Getting Position on Leaderboard"""
+    allUsers = User.query.all()
+    returns = {}
+    for student in allUsers:
+        totalStocks = len(student.stocks)
+        ret = 0
+        activeStocks = student.stocks
+        for stock in activeStocks:
+            ret += (float(Share(stock.ticker).get_price()) - stock.startingPrice)/stock.startingPrice
+        userTransactions = Transactions.query.filter_by(user_id=student.id)
+        totalStocks += userTransactions.count()
+
+        for trans in userTransactions:
+            ret += (trans.end_price - trans.ticker.startingPrice)/trans.ticker.startingPrice
+        returns[student.id] = ret/totalStocks
+    """Finished getting position"""
+    prices = {}
+    for stock in current_user.stocks:
+        prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id])
 
 
 @app.route('/loggedin')

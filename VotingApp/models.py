@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(80), unique=True)
     password_hash = db.Column(db.String)
     stocks = db.relationship('Tickers', secondary=ticker_identifier, backref='user')
+    transactions = db.relationship('Transactions', backref='user')
 
     @property
     def password(self):
@@ -39,6 +40,15 @@ class User(db.Model, UserMixin):
 class Tickers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticker = db.Column(db.String(5), unique=True)
+    startingPrice = db.Column(db.Float)
+    transactions = db.relationship('Transactions', backref='tickers')
     #user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     def __repr__(self):
         return "<Ticker '{}'>".format(self.ticker)
+
+class Transactions(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    ticker = db.Column(db.Integer, db.ForeignKey('tickers.id'), nullable=False)
+    date = db.Column(db.String)
+    end_price = db.Column(db.Integer)

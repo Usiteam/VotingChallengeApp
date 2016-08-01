@@ -10,6 +10,9 @@ body {
   background: #c1bdba;
   font-family: 'Titillium Web', sans-serif;
 }
+.ticker-table{
+    max-width: 200px;
+}
 
 a {
   text-decoration: none;
