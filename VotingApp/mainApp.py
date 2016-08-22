@@ -95,7 +95,10 @@ def dashboard():
         totalStocks += userTransactions.count()
         for trans in userTransactions:
             ret += (trans.end_price - trans.ticker.startingPrice)/trans.ticker.startingPrice
-        returns[student.id] = ret/totalStocks
+        if totalStocks is not 0:
+            returns[student.id] = ret/totalStocks
+        else:
+            returns[student.id] = 0
     "Sorts the dictionary by returns"
     ret_tups = sorted(returns.items(), key=operator.itemgetter(1), reverse=True)
     "Finds leadboard position"
@@ -113,7 +116,17 @@ def dashboard():
 
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):
-    print(exitIndex)
+    #print(current_user.id)  #user_id
+    #print(current_user.stocks[exitIndex-1].id)  #ticker_id
+    user = User.query.filter_by(id=current_user.id).first()
+    print(current_user.stocks.pop(exitIndex-1))
+    db.session.commit()
+    """user = User(email=setForm.setEmail.data,
+                firstName=setForm.firstName.data,
+                lastName=setForm.lastName.data,
+                password = setForm.setPassword.data)
+    db.session.add(user)
+    db.session.commit()"""
     return redirect(url_for('dashboard'))
 
 
