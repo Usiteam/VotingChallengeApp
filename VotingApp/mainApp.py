@@ -111,6 +111,11 @@ def dashboard():
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
     return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id], standing=standing)
 
+@app.route('/exitPosition/<int:exitIndex>')
+def exitPosition(exitIndex):
+    print(exitIndex)
+    return redirect(url_for('dashboard'))
+
 
 @app.route('/loggedin')
 def loggedin():

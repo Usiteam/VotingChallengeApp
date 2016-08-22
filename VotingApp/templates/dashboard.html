@@ -23,6 +23,93 @@
 
     </head>
     <body>
+        <div id="headerTitle">
+            Voting Challenge Dashboard
+        </div>
+
+
+        <!-- transparent clear table -->
+        <section> <!--for demo wrap-->
+        <h1>Active Positions</h1>
+        <div  class="tbl-header">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Ticker</th>
+              <th>Price Bought At</th>
+              <th>Current Price</th>
+              <th>Gain/Loss ($/share)</th>
+              <th>% Gain/Loss</th>
+              <th>Exit Positions</th>
+            </tr>
+          </thead>
+        </table>
+        </div>
+
+        <div  class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tbody>
+                  {% set count = 1 %}
+                  {% for ticker in stocks %}
+                  {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+                  <tr>
+                    <td>{{count}}</td>
+                    <td>{{ticker.ticker}}</td>
+                    <td>{{ticker.startingPrice}}</td>
+                    <td>{{prices[ticker.ticker]}}</td>
+                    <td>{{gain}}</td>
+                    <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
+                    <td><a href="{{url_for('exitPosition', exitIndex=count)}}"><button>&#10006;</button></a></td>
+                  </tr>
+                  {% set count = count+1 %}
+                  {% endfor %}
+
+            </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section> <!--for demo wrap-->
+    <h1>Exited Positions</h1>
+    <div  class="tbl-header">
+    <table cellpadding="0" cellspacing="0" border="0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Ticker</th>
+          <th>Price Bought At</th>
+          <th>Exit Price</th>
+          <th>Gain/Loss ($/share)</th>
+          <th>% Gain/Loss</th>
+        </tr>
+      </thead>
+    </table>
+    </div>
+
+    <div  class="tbl-content">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tbody>
+              {% set count = 1 %}
+              {% for ticker in stocks %}
+              {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+              <tr>
+                <td>{{count}}</td>
+                <td>{{ticker.ticker}}</td>
+                <td>{{ticker.startingPrice}}</td>
+                <td>{{prices[ticker.ticker]}}</td>
+                <td>{{gain}}</td>
+                <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
+              </tr>
+              {% set count = count+1 %}
+              {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+</section>
+        <!--
+        <span class="positionLabel">Active Positions</span>
         <div class="table-responsive">
             <table class="table table-inverse">
               <thead>
@@ -52,7 +139,7 @@
 
               </tbody>
           </table>
-      </div>
+      </div> -->
 
         {{ totalReturn }}
         {{ standing }}
