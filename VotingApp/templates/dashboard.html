@@ -27,6 +27,36 @@
             Voting Challenge Dashboard
         </div>
 
+        <!-- Total Returns -->
+        <section>
+            <h1>Total Returns</h1>
+            <div  class="tbl-header">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <thead>
+                <tr>
+                  <th>Standing</th>
+                  <th>Total Return</th>
+                </tr>
+              </thead>
+            </table>
+            </div>
+            <div  class="tbl-content" id="totalReturnTable" >
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                      <tr>
+                        <td>{{standing}}</td>
+                        <td>{{totalReturn}}</td>
+                      </tr>
+                </tbody>
+                </table>
+            </div>
+        </section>
+
+
+
+        <!-- /////////////////////// END OF TOTAL RETURNS ////////////////////////////// -->
+
+
 
         <!-- transparent clear table -->
         <section> <!--for demo wrap-->
@@ -91,15 +121,15 @@
         <table cellpadding="0" cellspacing="0" border="0">
           <tbody>
               {% set count = 1 %}
-              {% for ticker in stocks %}
-              {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+              {% for ticker in exitedStocks %}
+              {% set gain = ticker.end_price - startingPrices[ticker.ticker]%}
               <tr>
                 <td>{{count}}</td>
                 <td>{{ticker.ticker}}</td>
-                <td>{{ticker.startingPrice}}</td>
-                <td>{{prices[ticker.ticker]}}</td>
+                <td>{{startingPrices[ticker.ticker]}}</td>
+                <td>{{ticker.end_price}}</td>
                 <td>{{gain}}</td>
-                <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
+                <td>{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
               </tr>
               {% set count = count+1 %}
               {% endfor %}

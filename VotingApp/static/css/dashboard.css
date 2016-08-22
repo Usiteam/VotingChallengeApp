@@ -39,6 +39,11 @@ table{
   margin-top: 0px;
   border: 1px solid rgba(255,255,255,0.3);
 }
+
+#totalReturnTable{
+    height: 40px;
+}
+
 th{
   padding: 20px 15px;
   text-align: center;

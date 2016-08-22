@@ -77,7 +77,6 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    print(current_user, sys.stderr)
     """Getting Position on Leaderboard"""
     allUsers = User.query.all()
     returns = {}
@@ -94,7 +93,8 @@ def dashboard():
         userTransactions = Transactions.query.filter_by(user_id=student.id)
         totalStocks += userTransactions.count()
         for trans in userTransactions:
-            ret += (trans.end_price - trans.ticker.startingPrice)/trans.ticker.startingPrice
+            startingPrice = Tickers.query.filter_by(ticker=trans.ticker).first().startingPrice
+            ret += (trans.end_price - startingPrice)/startingPrice
         if totalStocks is not 0:
             returns[student.id] = ret/totalStocks
         else:
@@ -112,21 +112,31 @@ def dashboard():
     prices = {}
     for stock in current_user.stocks:
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id], standing=standing)
+    startingPrices = {}
+    for stock in Tickers.query.all():
+        startingPrices[stock.ticker] = stock.startingPrice
+    exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks)
 
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):
     #print(current_user.id)  #user_id
     #print(current_user.stocks[exitIndex-1].id)  #ticker_id
+    """Deletes position from Active Positions"""
     user = User.query.filter_by(id=current_user.id).first()
-    print(current_user.stocks.pop(exitIndex-1))
+    exitPosition = current_user.stocks[exitIndex-1]
+    current_user.stocks.pop(exitIndex-1)
     db.session.commit()
-    """user = User(email=setForm.setEmail.data,
-                firstName=setForm.firstName.data,
-                lastName=setForm.lastName.data,
-                password = setForm.setPassword.data)
-    db.session.add(user)
-    db.session.commit()"""
+
+    """Need to add to transactions table"""
+    t = datetime.now()
+    today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
+    transaction = Transactions(user_id=current_user.id,
+                ticker=exitPosition.ticker,
+                date=today,
+                end_price = float(Share(exitPosition.ticker).get_price()))
+    db.session.add(transaction)
+    db.session.commit()
     return redirect(url_for('dashboard'))
 
 
