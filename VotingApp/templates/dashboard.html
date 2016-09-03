@@ -107,6 +107,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Date</th>
           <th>Ticker</th>
           <th>Price Bought At</th>
           <th>Exit Price</th>
@@ -125,6 +126,7 @@
               {% set gain = ticker.end_price - startingPrices[ticker.ticker]%}
               <tr>
                 <td>{{count}}</td>
+                <td>{{ticker.date}}</td>
                 <td>{{ticker.ticker}}</td>
                 <td>{{startingPrices[ticker.ticker]}}</td>
                 <td>{{ticker.end_price}}</td>
