@@ -11,6 +11,7 @@ def initdb():
     apple = Tickers(ticker="AAPL", startingPrice=89.8)
     signet = Tickers(ticker="SIG", startingPrice=120)
     db.session.add(User(firstName="Dilan", lastName="Hira",email="dilan@utexas.edu", password="test", stocks=[apple, signet]))
+    db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test", stocks=[apple, signet]))
     #db.session.add(apple)
     db.session.commit()
     print 'Initialized the database'
