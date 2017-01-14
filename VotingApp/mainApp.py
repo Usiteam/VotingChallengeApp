@@ -8,6 +8,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from models import User, Tickers, Transactions
 from VotingApp import db, app, login_manager
 from yahoo_finance import Share
+import requests
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,7 +20,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 @login_manager.user_loader
 def load_user(userid):
     return User.query.get(int(userid))
-
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -110,13 +110,27 @@ def dashboard():
 
     """Finished getting position"""
     prices = {}
+    names = {}
     for stock in current_user.stocks:
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
+        names[stock.ticker] = get_symbol(stock.ticker)
     startingPrices = {}
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
     exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks)
+    exitedStocksNames = {}
+    for stock in exitedStocks:
+        exitedStocksNames[stock.ticker] = get_symbol(stock.ticker)
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames), numActiveStocks = len(current_user.stocks), firstName = current_user.firstName, lastName = current_user.lastName)
+
+def get_symbol(symbol):
+    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(symbol)
+
+    result = requests.get(url).json()
+
+    for x in result['ResultSet']['Result']:
+        if x['symbol'] == symbol:
+            return x['name']
 
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):

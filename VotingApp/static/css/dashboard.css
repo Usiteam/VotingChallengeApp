@@ -1,10 +1,11 @@
 
 
 #headerTitle{
-    color:   #ff9900;
+    color:   white;
     font-size: 60px;
     text-align: center;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
+    padding: 15px;
 }
 
 .positionLabel{
@@ -15,6 +16,11 @@
 
 .footer-container{
     height: 20px;
+    text-align: center;
+}
+
+.footer-container a{
+    color: white;
 }
 
 
@@ -26,6 +32,22 @@ h1{
   text-align: center;
   margin-bottom: 15px;
 }
+
+h3{
+  font-size: 25px;
+  color: white;
+  font-weight: 300;
+  text-align: center;
+}
+
+h5{
+  font-size: 45px;
+  color: white;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
 table{
   width:100%;
   table-layout: fixed;
@@ -42,6 +64,72 @@ table{
 
 #totalReturnTable{
     height: 40px;
+}
+
+.ticker-box{
+  padding:5px;
+  margin: 0px;
+  border: 0px;
+  text-wrap: normal;
+  background-color:#13232f;
+  color:white;
+  width: 200px;
+  margin: 10px;
+}
+
+.ticker-code{
+  font-size: 25px;
+  padding-bottom: 10px;
+  padding-left:10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.ticker-name{
+  font-size: 17px;
+  padding-bottom: 5px;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.positions-container{
+  display:flex;
+}
+
+@media screen and (max-width: 500px) {
+    .positions-container{
+      display:inline;
+    }
+
+    .ticker-box{
+      width: calc(100% - 21px);
+    }
+}
+
+.ticker-exit-icon{
+  color: white;
+  margin-top: -10px;
+}
+
+.fa-times:hover {
+    color: grey;
+}
+
+.ticker-price{
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.percent-gain{
+  font-size: 15px;
+  text-align: center;
+}
+
+.exit-date{
+  font-size: 13px;
+  padding-top: 5px;
+  text-align: center;
 }
 
 th{
@@ -66,8 +154,7 @@ td{
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body{
-  background: -webkit-linear-gradient(left, #b3b3b3, #ff8c00);
-  background: linear-gradient(to bottom, #b3b3b3, #ff8c00);
+  background-color: #2a3843;
   font-family: 'Roboto', sans-serif;
 }
 section{

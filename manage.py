@@ -1,16 +1,17 @@
 from VotingApp.mainApp import app, db
 from VotingApp.models import User, Tickers
 from flask.ext.script import Manager, prompt_bool
+import requests
 
 manager = Manager(app)
 
 @manager.command
 def initdb():
     db.create_all()
-    db.session.add(User(firstName="LeBron", lastName="James",email="dilan@webitup.com", password="test", stocks=[Tickers(ticker='ATVI', startingPrice=28.12)]))
+    #db.session.add(User(firstName="LeBron", lastName="James",email="dilan@webitup.com", password="test", stocks=[Tickers(ticker='ATVI', startingPrice=28.12)]))
     apple = Tickers(ticker="AAPL", startingPrice=89.8)
-    signet = Tickers(ticker="SIG", startingPrice=120)
-    db.session.add(User(firstName="Dilan", lastName="Hira",email="dilan@utexas.edu", password="test", stocks=[apple, signet]))
+    signet = Tickers(ticker="SIG", startingPrice=90)
+    #db.session.add(User(firstName="Dilan", lastName="Hira",email="dilan@utexas.edu", password="test", stocks=[apple, signet]))
     db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test", stocks=[apple, signet]))
     #db.session.add(apple)
     db.session.commit()

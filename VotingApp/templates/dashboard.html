@@ -22,6 +22,9 @@
         <link rel="stylesheet" href="../static/css/dashboard.css">
 
     </head>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <body>
         <div id="headerTitle">
             Voting Challenge Dashboard
@@ -29,26 +32,12 @@
 
         <!-- Total Returns -->
         <section>
-            <h1>Total Returns</h1>
-            <div  class="tbl-header">
-            <table cellpadding="0" cellspacing="0" border="0">
-              <thead>
-                <tr>
-                  <th>Standing</th>
-                  <th>Total Return</th>
-                </tr>
-              </thead>
-            </table>
-            </div>
-            <div  class="tbl-content" id="totalReturnTable" >
-                <table cellpadding="0" cellspacing="0" border="0">
-                  <tbody>
-                      <tr>
-                        <td>{{standing}}</td>
-                        <td>{{totalReturn}}</td>
-                      </tr>
-                </tbody>
-                </table>
+
+            <div style="color: white">
+              <h5> Welcome, {{firstName}} {{lastName}}!</h5>
+              <h3>Rank: {{standing}}</h3>
+              {% set totalReturnDisplay = (totalReturn*100)|round(2, 'common') %}
+              <h3>Total Return: {{totalReturnDisplay}}%</h3>
             </div>
         </section>
 
@@ -57,130 +46,115 @@
         <!-- /////////////////////// END OF TOTAL RETURNS ////////////////////////////// -->
 
 
-
         <!-- transparent clear table -->
-        <section> <!--for demo wrap-->
+    {% if numActiveStocks != 0 %}
+
+      <section> <!--for demo wrap-->
+
         <h1>Active Positions</h1>
-        <div  class="tbl-header">
-        <table cellpadding="0" cellspacing="0" border="0">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Ticker</th>
-              <th>Price Bought At</th>
-              <th>Current Price</th>
-              <th>Gain/Loss ($/share)</th>
-              <th>% Gain/Loss</th>
-              <th>Exit Positions</th>
-            </tr>
-          </thead>
-        </table>
+
+        <div class="positions-container">
+
+          {% set count = 1 %}
+          {% for ticker in stocks %}
+          {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+
+          <div class="ticker-box"> 
+            <div class="ticker-code">{{ticker.ticker}}
+              <a href="{{url_for('exitPosition', exitIndex=count)}}" class="ticker-exit-icon">
+                <i class="fa fa-times" style="font-size: 20px;"></i>
+              </a>
+            </div>
+            <div class="ticker-name">{{names[ticker.ticker]}}</div>
+            <div class="ticker-price">
+              {% if gain < 0 %}
+                <i class="fa fa-arrow-down" style="font-size: 30px"></i>
+              {% endif %}
+              {% if gain == 0 %}
+                <i class="fa fa-arrow-right" style="font-size: 30px"></i>
+              {% endif %}
+              {% if gain > 0 %}
+                <i class="fa fa-arrow-up" style="font-size: 30px"></i>
+              {% endif %}
+              <span style="font-size: 30px;">{{prices[ticker.ticker]}}</span>
+              <span style="font-size: 20px;">USD</span>
+            </div>
+            <div class="percent-gain">
+              {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
+              {% if percent < 0 %}
+                <span style="color: red; padding-right: 45px;">{{gain}}</span>
+                <span style="color: red;">{{percent}}%</span>
+              {% endif %}
+              {% if percent > 0 %}
+                <span style="color: green; padding-right: 45px;">{{gain}}</span>
+                <span style="color: green;">{{percent}}%</span>
+              {% endif %}
+            </div>
+          </div>
+
+          {% set count = count + 1 %}
+          {% endfor %}
+
         </div>
 
-        <div  class="tbl-content">
-            <table cellpadding="0" cellspacing="0" border="0">
-              <tbody>
-                  {% set count = 1 %}
-                  {% for ticker in stocks %}
-                  {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
-                  <tr>
-                    <td>{{count}}</td>
-                    <td>{{ticker.ticker}}</td>
-                    <td>{{ticker.startingPrice}}</td>
-                    <td>{{prices[ticker.ticker]}}</td>
-                    <td>{{gain}}</td>
-                    <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
-                    <td><a href="{{url_for('exitPosition', exitIndex=count)}}"><button>&#10006;</button></a></td>
-                  </tr>
-                  {% set count = count+1 %}
-                  {% endfor %}
+      </section>
 
-            </tbody>
-            </table>
+    {% endif %}
+
+
+    {% if numExitedStocks != 0 %}
+      <section> <!--for demo wrap-->
+
+        <h1>Exited Positions</h1>
+
+        <div class="positions-container">
+
+          {% for ticker in exitedStocks %}
+          {% set gain = ticker.end_price - startingPrices[ticker.ticker] %}
+
+          <div class="ticker-box">
+            <div class="ticker-code">{{ticker.ticker}}</div>
+            <div class="ticker-name">{{exitedStocksNames[ticker.ticker]}}</div>
+            <div class="ticker-price">
+              {% if gain < 0 %}
+                <i class="fa fa-arrow-down" style="font-size: 30px"></i>
+              {% endif %}
+              {% if gain == 0 %}
+                <i class="fa fa-arrow-right" style="font-size: 30px"></i>
+              {% endif %}
+              {% if gain > 0 %}
+                <i class="fa fa-arrow-up" style="font-size: 30px"></i>
+              {% endif %}
+              <span style="font-size: 30px;">{{ticker.end_price}}</span>
+              <span style="font-size: 20px;">USD</span>
+            </div>
+            <div class="percent-gain">
+              {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
+              {% if percent < 0 %}
+                <span style="color: red; padding-right: 45px;">{{gain}}</span>
+                <span style="color: red;">{{percent}}%</span>
+              {% endif %}
+              {% if percent > 0 %}
+                <span style="color: green; padding-right: 45px;">{{gain}}</span>
+                <span style="color: green;">{{percent}}%</span>
+              {% endif %}
+            </div>
+            <div class="exit-date">{{ticker.date}}</span>
+            </div>
+          </div>
+
+          {% endfor %}
+
         </div>
-    </section>
 
-    <section> <!--for demo wrap-->
-    <h1>Exited Positions</h1>
-    <div  class="tbl-header">
-    <table cellpadding="0" cellspacing="0" border="0">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Date</th>
-          <th>Ticker</th>
-          <th>Price Bought At</th>
-          <th>Exit Price</th>
-          <th>Gain/Loss ($/share)</th>
-          <th>% Gain/Loss</th>
-        </tr>
-      </thead>
-    </table>
-    </div>
-
-    <div  class="tbl-content">
-        <table cellpadding="0" cellspacing="0" border="0">
-          <tbody>
-              {% set count = 1 %}
-              {% for ticker in exitedStocks %}
-              {% set gain = ticker.end_price - startingPrices[ticker.ticker]%}
-              <tr>
-                <td>{{count}}</td>
-                <td>{{ticker.date}}</td>
-                <td>{{ticker.ticker}}</td>
-                <td>{{startingPrices[ticker.ticker]}}</td>
-                <td>{{ticker.end_price}}</td>
-                <td>{{gain}}</td>
-                <td>{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
-              </tr>
-              {% set count = count+1 %}
-              {% endfor %}
-
-        </tbody>
-        </table>
-    </div>
-</section>
-        <!--
-        <span class="positionLabel">Active Positions</span>
-        <div class="table-responsive">
-            <table class="table table-inverse">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>ticker</th>
-                  <th>Price Bought At</th>
-                  <th>Current Price</th>
-                  <th>Gain/Loss ($/share)</th>
-                  <th>% Gain/Loss</th>
-                </tr>
-              </thead>
-              <tbody>
-                  {% set count = 1 %}
-                  {% for ticker in stocks %}
-                  {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
-                  <tr>
-                    <th scope="row">{{count}}</th>
-                    <td>{{ticker.ticker}}</td>
-                    <td>{{ticker.startingPrice}}</td>
-                    <td>{{prices[ticker.ticker]}}</td>
-                    <td>{{gain}}</td>
-                    <td>{{(gain/(ticker.startingPrice)*100)|round(2,'common')}}%</td>
-                  </tr>
-                  {% set count = count+1 %}
-                  {% endfor %}
-
-              </tbody>
-          </table>
-      </div> -->
-
-        {{ totalReturn }}
-        {{ standing }}
+      </section>
+    {% endif %}
 
         <!-- #main-container -->
-        <a href="{{url_for('logout')}}">Logout</a>
+        
         <div class="footer-container">
             <footer class="wrapper">
-                <h3>footer</h3>
+                <a href="{{url_for('logout')}}">Logout</a>
             </footer>
         </div>
 
