@@ -1,52 +1,56 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/main.css">
 
-        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
 
-        <!-- Bootstrap CDN -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="../static/css/dashboard.css">
-
-    </head>
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../static/css/dashboard.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <body>
-        <div id="headerTitle">
-            Voting Challenge Dashboard
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  </head>
+
+  <body>
+    <div id="headerTitle">
+        Voting Challenge Dashboard
+    </div>
+
+    <!-- Total Returns -->
+    <section>
+
+        <div style="color: white">
+          <h2> Welcome, {{firstName}} {{lastName}}!</h2>
+          <h3>Rank: {{standing}}</h3>
+          {% set totalReturnDisplay = (totalReturn*100)|round(2, 'common') %}
+          <h3>Total Return: {{totalReturnDisplay}}%</h3>
         </div>
+    </section>
 
-        <!-- Total Returns -->
-        <section>
+    <!-- Modal sample -->
 
-            <div style="color: white">
-              <h5> Welcome, {{firstName}} {{lastName}}!</h5>
-              <h3>Rank: {{standing}}</h3>
-              {% set totalReturnDisplay = (totalReturn*100)|round(2, 'common') %}
-              <h3>Total Return: {{totalReturnDisplay}}%</h3>
-            </div>
-        </section>
+      <!-- /////////////////////// END OF TOTAL RETURNS ////////////////////////////// -->
 
 
-
-        <!-- /////////////////////// END OF TOTAL RETURNS ////////////////////////////// -->
-
-
-        <!-- transparent clear table -->
+      <!-- transparent clear table -->
     {% if numActiveStocks != 0 %}
 
       <section> <!--for demo wrap-->
@@ -60,9 +64,37 @@
           {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
 
           <div class="ticker-box"> 
-            <div class="ticker-code">{{ticker.ticker}}
+            <div class="ticker-code">
+              {% set id = ticker.ticker + "Modal" %}
+              {% set idLink = "#" + id %}
+
+              <a href={{idLink}} role="button" data-toggle="modal" style="color: white">{{ticker.ticker}}</a>
+
+              <div class="modal fade" id={{id}} role="dialog">
+                <div class="modal-dialog" style="background-color: white">
+                
+                  <!-- Modal content-->
+                  <div classd="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" style="color: #2a3843">{{ticker.ticker}}</h4>
+                    </div>
+                    <!-- Placeholder for the graph -->
+                    {% set url = "http://chart.finance.yahoo.com/z?s=" + ticker.ticker + "&t=6m&q=l&l=on&z=s&p=m50,m200" %}
+                    <img src={{url}} class="stock-graph">
+                    <!-- Description of the stock (text placeholder) -->
+                    <div class="modal-body" style="color: #2a3843;">
+                      <p style="font-size: 15px;">Description of stock.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+
               <a href="{{url_for('exitPosition', exitIndex=count)}}" class="ticker-exit-icon">
-                <i class="fa fa-times" style="font-size: 20px;"></i>
+                <i class="fa fa-times" style="font-size: 20px;" title="Exit this Position"></i>
               </a>
             </div>
             <div class="ticker-name">{{names[ticker.ticker]}}</div>
@@ -96,6 +128,7 @@
           {% endfor %}
 
         </div>
+        </a>
 
       </section>
 
@@ -113,7 +146,35 @@
           {% set gain = ticker.end_price - startingPrices[ticker.ticker] %}
 
           <div class="ticker-box">
-            <div class="ticker-code">{{ticker.ticker}}</div>
+            <div class="ticker-code">
+              {% set id = ticker.ticker + "Modal" %}
+              {% set idLink = "#" + id %}
+              
+              <a href={{idLink}} role="button" data-toggle="modal" style="color: white">{{ticker.ticker}}</a>
+
+              <div class="modal fade" id={{id}} role="dialog">
+                <div class="modal-dialog" style="background-color: white">
+                
+                  <!-- Modal content-->
+                  <div classd="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" style="color: #2a3843">{{ticker.ticker}}</h4>
+                    </div>
+                    <!-- Placeholder for the graph -->
+                    {% set url = "http://chart.finance.yahoo.com/z?s=" + ticker.ticker + "&t=6m&q=l&l=on&z=s&p=m50,m200" %}
+                    <img src={{url}} class="stock-graph">
+                    <!-- Description of the stock (text placeholder) -->
+                    <div class="modal-body" style="color: #2a3843;">
+                      <p style="font-size: 15px;">Description of stock.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
             <div class="ticker-name">{{exitedStocksNames[ticker.ticker]}}</div>
             <div class="ticker-price">
               {% if gain < 0 %}
@@ -150,17 +211,17 @@
       </section>
     {% endif %}
 
-        <!-- #main-container -->
-        
-        <div class="footer-container">
-            <footer class="wrapper">
-                <a href="{{url_for('logout')}}">Logout</a>
-            </footer>
-        </div>
+      <!-- #main-container -->
+      
+    <div class="footer-container">
+        <footer class="wrapper">
+            <a href="{{url_for('logout')}}">Logout</a>
+        </footer>
+    </div>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
-        <script src="js/main.js"></script>
-    </body>
+    <script src="js/main.js"></script>
+  </body>
 </html>
