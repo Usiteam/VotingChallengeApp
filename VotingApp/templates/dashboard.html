@@ -93,9 +93,35 @@
                 </div>
               </div>
 
-              <a href="{{url_for('exitPosition', exitIndex=count)}}" class="ticker-exit-icon">
+              {% set exitId = "exit" + ticker.ticker + "Modal" %}
+              {% set exitIdLink = "#" + exitId %}
+
+              <a href={{exitIdLink}} role="button" data-toggle="modal" class="ticker-exit-icon">
                 <i class="fa fa-times" style="font-size: 20px;" title="Exit this Position"></i>
               </a>
+
+              <div class="modal fade" id={{exitId}} role="dialog">
+                <div class="modal-dialog" style="background-color: white">
+
+                  <!-- Modal content-->
+                  <div classd="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" style="color: #2a3843"> Exit {{ticker.ticker}}?</h4>
+                    </div>
+                    <div class="modal-body" style="color: #2a3843;">
+                      <p style="font-size: 15px;">Are you sure you wish to exit your position on {{ticker.ticker}}?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      <a href="{{url_for('exitPosition', exitIndex=count)}}" >
+                        <button type="button" class="btn btn-default">Yes</button>
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
             </div>
             <div class="ticker-name">{{names[ticker.ticker]}}</div>
             <div class="ticker-price">
