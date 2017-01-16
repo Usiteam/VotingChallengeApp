@@ -8,6 +8,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from models import User, Tickers, Transactions
 from VotingApp import db, app, login_manager
 from yahoo_finance import Share
+from pytz import timezone
 import requests
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -111,17 +112,21 @@ def dashboard():
     """Finished getting position"""
     prices = {}
     names = {}
+    dates = {}
     for stock in current_user.stocks:
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
         names[stock.ticker] = get_symbol(stock.ticker)
+        dates[stock.ticker] = get_datetime(stock.ticker)
     startingPrices = {}
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
     exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
     exitedStocksNames = {}
+    exitedStockDates = {}
     for stock in exitedStocks:
         exitedStocksNames[stock.ticker] = get_symbol(stock.ticker)
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames), numActiveStocks = len(current_user.stocks), firstName = current_user.firstName, lastName = current_user.lastName)
+        exitedStockDates[stock.ticker] = get_datetime(stock.ticker)
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames), numActiveStocks = len(current_user.stocks), firstName = current_user.firstName, lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates)
 
 def get_symbol(symbol):
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(symbol)
@@ -131,6 +136,16 @@ def get_symbol(symbol):
     for x in result['ResultSet']['Result']:
         if x['symbol'] == symbol:
             return x['name']
+
+def get_datetime(ticker):
+    eastern = timezone('US/Eastern')
+    utc = timezone("UTC")
+    dateString = Share(ticker).get_trade_datetime().split(" UTC")[0]
+    d = datetime.strptime(dateString, "%Y-%m-%d %H:%M:%S")
+    loc_d = utc.localize(d)
+    est_d = loc_d.astimezone(eastern)
+    fmt = "%b %d, %I:%M%p %Z"
+    return est_d.strftime(fmt)
 
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):

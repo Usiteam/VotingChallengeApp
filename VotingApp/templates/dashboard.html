@@ -148,6 +148,8 @@
                 <span style="color: #69F0AE;">{{percent}}%</span>
               {% endif %}
             </div>
+            {% set updateDateTime = dates[ticker.ticker] %}
+            <div class="date-time">Updated on {{updateDateTime}}</div>
           </div>
 
           {% set count = count + 1 %}
@@ -228,6 +230,8 @@
             </div>
             <div class="exit-date">{{ticker.date}}</span>
             </div>
+            {% set updateDateTime = exitedStockDates[ticker.ticker] %}
+            <div class="date-time">Updated on {{updateDateTime}}</div>
           </div>
 
           {% endfor %}
