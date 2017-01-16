@@ -63,7 +63,7 @@
           {% for ticker in stocks %}
           {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
 
-          <div class="ticker-box"> 
+          <div class="ticker-box">
             <div class="ticker-code">
               {% set id = ticker.ticker + "Modal" %}
               {% set idLink = "#" + id %}
@@ -72,7 +72,7 @@
 
               <div class="modal fade" id={{id}} role="dialog">
                 <div class="modal-dialog" style="background-color: white">
-                
+
                   <!-- Modal content-->
                   <div classd="modal-content">
                     <div class="modal-header">
@@ -89,7 +89,7 @@
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                   </div>
-                  
+
                 </div>
               </div>
 
@@ -114,12 +114,12 @@
             <div class="percent-gain">
               {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
               {% if percent < 0 %}
-                <span style="color: red; padding-right: 45px;">{{gain}}</span>
-                <span style="color: red;">{{percent}}%</span>
+                <span style="color: #FF5252; padding-right: 45px;">{{gain}}</span>
+                <span style="color: #FF5252;">{{percent}}%</span>
               {% endif %}
               {% if percent > 0 %}
-                <span style="color: green; padding-right: 45px;">{{gain}}</span>
-                <span style="color: green;">{{percent}}%</span>
+                <span style="color: #69F0AE; padding-right: 45px;">{{gain}}</span>
+                <span style="color: #69F0AE;">{{percent}}%</span>
               {% endif %}
             </div>
           </div>
@@ -149,12 +149,12 @@
             <div class="ticker-code">
               {% set id = ticker.ticker + "Modal" %}
               {% set idLink = "#" + id %}
-              
+
               <a href={{idLink}} role="button" data-toggle="modal" style="color: white">{{ticker.ticker}}</a>
 
               <div class="modal fade" id={{id}} role="dialog">
                 <div class="modal-dialog" style="background-color: white">
-                
+
                   <!-- Modal content-->
                   <div classd="modal-content">
                     <div class="modal-header">
@@ -171,7 +171,7 @@
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                   </div>
-                  
+
                 </div>
               </div>
             </div>
@@ -212,7 +212,7 @@
     {% endif %}
 
       <!-- #main-container -->
-      
+
     <div class="footer-container">
         <footer class="wrapper">
             <a href="{{url_for('logout')}}">Logout</a>

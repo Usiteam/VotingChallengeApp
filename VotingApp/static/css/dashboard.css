@@ -1,7 +1,7 @@
 
 
 #headerTitle{
-    color: white;
+    color: black;
     font-size: 60px;
     text-align: center;
     margin-bottom: 40px;
@@ -20,7 +20,7 @@
 }
 
 .footer-container a{
-    color: white;
+    color: black;
 }
 
 .stock-graph{
@@ -30,7 +30,7 @@
 
 h1{
   font-size: 30px;
-  color: white;
+  color: black;
   text-transform: uppercase;
   font-weight: 300;
   text-align: center;
@@ -39,7 +39,7 @@ h1{
 
 h3{
   font-size: 25px;
-  color: white;
+  color: black;
   font-weight: 300;
   text-align: center;
 }
@@ -50,7 +50,7 @@ h4{
 
 h2{
   font-size: 45px;
-  color: white;
+  color: black;
   font-weight: 300;
   text-align: center;
   margin-bottom: 15px;
@@ -75,14 +75,22 @@ table{
 }
 
 .ticker-box{
-  padding:5px;
+  padding:0.33em;
   margin: 0px;
   border: 0px;
   text-wrap: normal;
-  background-color:#13232f;
-  color:white;
+  background-color: #546d78;
+  color:#E0E0E0;
   width: 200px;
   margin: 10px;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px;
+  transition: all 400ms ease-in-out;
+  border-radius: 2px;
+}
+
+.ticker-box:hover{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px
 }
 
 .ticker-code{
@@ -162,7 +170,7 @@ td{
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body{
-  background-color: #2a3843;
+  background-color: white;
   font-family: 'Roboto', sans-serif;
 }
 section{
