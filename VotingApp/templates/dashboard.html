@@ -50,6 +50,8 @@
       <!-- /////////////////////// END OF TOTAL RETURNS ////////////////////////////// -->
 
 
+<!-- ACTIVE STOCKS -->
+
       <!-- transparent clear table -->
     {% if numActiveStocks != 0 %}
 
@@ -135,16 +137,30 @@
                 <i class="fa fa-arrow-up" style="font-size: 30px"></i>
               {% endif %}
               <span style="font-size: 30px;">{{prices[ticker.ticker]}}</span>
-              <span style="font-size: 20px;">USD</span>
+              <span style="font-size: 20px; color: #9E9E9E;">USD</span>
+            </div>
+            <div class="percent-gain">
+              {% set todayPercent = percentChanges[ticker.ticker] %}
+              {% set todayGain = changes[ticker.ticker] %}
+              <span style="color: #DCE3E7; padding-right: 15px;">Today</span>
+              {% if todayGain < 0 %}
+                <span style="color: #FF5252; padding-right: 25px;">{{todayGain}}</span>
+                <span style="color: #FF5252;">{{todayPercent}}</span>
+              {% endif %}
+              {% if todayGain >= 0 %}
+                <span style="color: #69F0AE; padding-right: 25px;">{{todayGain}}</span>
+                <span style="color: #69F0AE;">{{todayPercent}}</span>
+              {% endif %}
             </div>
             <div class="percent-gain">
               {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
+              <span style="color: #DCE3E7; padding-right: 15px;">Total</span>
               {% if percent < 0 %}
-                <span style="color: #FF5252; padding-right: 45px;">{{gain}}</span>
+                <span style="color: #FF5252; padding-right: 25px;">{{gain}}</span>
                 <span style="color: #FF5252;">{{percent}}%</span>
               {% endif %}
               {% if percent > 0 %}
-                <span style="color: #69F0AE; padding-right: 45px;">{{gain}}</span>
+                <span style="color: #69F0AE; padding-right: 25px;">{{gain}}</span>
                 <span style="color: #69F0AE;">{{percent}}%</span>
               {% endif %}
             </div>
@@ -162,6 +178,7 @@
 
     {% endif %}
 
+<!-- EXITED STOCKS -->
 
     {% if numExitedStocks != 0 %}
       <section> <!--for demo wrap-->
@@ -215,16 +232,17 @@
                 <i class="fa fa-arrow-up" style="font-size: 30px"></i>
               {% endif %}
               <span style="font-size: 30px;">{{ticker.end_price}}</span>
-              <span style="font-size: 20px;">USD</span>
+              <span style="font-size: 20px; color: #9E9E9E;">USD</span>
             </div>
             <div class="percent-gain">
               {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
+              <span style="color: #DCE3E7; padding-right: 15px;">Total</span>
               {% if percent < 0 %}
-                <span style="color: red; padding-right: 45px;">{{gain}}</span>
+                <span style="color: red; padding-right: 25px;">{{gain}}</span>
                 <span style="color: red;">{{percent}}%</span>
               {% endif %}
               {% if percent > 0 %}
-                <span style="color: green; padding-right: 45px;">{{gain}}</span>
+                <span style="color: green; padding-right: 25px;">{{gain}}</span>
                 <span style="color: green;">{{percent}}%</span>
               {% endif %}
             </div>
