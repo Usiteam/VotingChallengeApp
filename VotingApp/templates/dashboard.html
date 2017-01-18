@@ -141,44 +141,31 @@
               <span style="font-size: 20px; color: #9E9E9E;">USD</span>
             </div>
             <table cellpadding="0">
-<!--             <div class="percent-gain">
-              {% set todayPercent = percentChanges[ticker.ticker] %}
-              {% set todayGain = changes[ticker.ticker] %}
-              <span style="color: #DCE3E7; padding-right: 15px;">Today</span>
-              {% if todayGain < 0 %}
-                <span style="color: #FF5252; padding-right: 25px;">{{todayGain}}</span>
-                <span style="color: #FF5252;">{{todayPercent}}</span>
-              {% endif %}
-              {% if todayGain >= 0 %}
-                <span style="color: #69F0AE; padding-right: 25px;">{{todayGain}}</span>
-                <span style="color: #69F0AE;">{{todayPercent}}</span>
-              {% endif %}
-            </div> -->
-            <tr>
-              {% set todayPercent = percentChanges[ticker.ticker] %}
-              {% set todayGain = changes[ticker.ticker] %}
-              <td style="color: #DCE3E7;">Today</td>
-              {% if todayGain < 0 %}
-                <td style="color: #FF5252;">{{todayGain}}</td>
-                <td style="color: #FF5252;">{{todayPercent}}</td>
-              {% endif %}
-              {% if todayGain >= 0 %}
-                <td style="color: #69F0AE;">{{todayGain}}</td>
-                <td style="color: #69F0AE;">{{todayPercent}}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
-              <td style="color: #DCE3E7;">Total</td>
-              {% if percent < 0 %}
-                <td style="color: #FF5252;">{{gain}}</td>
-                <td style="color: #FF5252;">{{percent}}%</td>
-              {% endif %}
-              {% if percent > 0 %}
-                <td style="color: #69F0AE;">{{gain}}</td>
-                <td style="color: #69F0AE;">{{percent}}%</td>
-              {% endif %}
-            </tr>
+              <tr>
+                {% set todayPercent = percentChanges[ticker.ticker] %}
+                {% set todayGain = changes[ticker.ticker] %}
+                <td style="color: #DCE3E7;">Today</td>
+                {% if todayGain < 0 %}
+                  <td style="color: #FF5252;">{{todayGain}}</td>
+                  <td style="color: #FF5252;">{{todayPercent}}</td>
+                {% endif %}
+                {% if todayGain >= 0 %}
+                  <td style="color: #69F0AE;">{{todayGain}}</td>
+                  <td style="color: #69F0AE;">{{todayPercent}}</td>
+                {% endif %}
+              </tr>
+              <tr>
+                {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
+                <td style="color: #DCE3E7;">Total</td>
+                {% if percent < 0 %}
+                  <td style="color: #FF5252;">{{gain}}</td>
+                  <td style="color: #FF5252;">{{percent}}%</td>
+                {% endif %}
+                {% if percent > 0 %}
+                  <td style="color: #69F0AE;">{{gain}}</td>
+                  <td style="color: #69F0AE;">{{percent}}%</td>
+                {% endif %}
+              </tr>
             </table>
             {% set updateDateTime = dates[ticker.ticker] %}
             <div class="date-time">{{updateDateTime}}</div>
@@ -250,18 +237,20 @@
               <span style="font-size: 30px;">{{ticker.end_price}}</span>
               <span style="font-size: 20px; color: #9E9E9E;">USD</span>
             </div>
-            <div class="percent-gain">
-              {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
-              <span style="color: #DCE3E7; padding-right: 15px;">Total</span>
-              {% if percent < 0 %}
-                <span style="color: red; padding-right: 25px;">{{gain}}</span>
-                <span style="color: red;">{{percent}}%</span>
-              {% endif %}
-              {% if percent > 0 %}
-                <span style="color: green; padding-right: 25px;">{{gain}}</span>
-                <span style="color: green;">{{percent}}%</span>
-              {% endif %}
-            </div>
+            <table cellpadding="0">
+              <tr>
+                {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
+                <td style="color: #DCE3E7;">Total</td>
+                {% if percent < 0 %}
+                  <td style="color: red;">{{gain}}</td>
+                  <td style="color: red;">{{percent}}%</td>
+                {% endif %}
+                {% if percent > 0 %}
+                  <td style="color: green;">{{gain}}</td>
+                  <td style="color: green;">{{percent}}%</td>
+                {% endif %}
+              </tr>
+            </table>
             <div class="exit-date">{{ticker.date}}</span>
             </div>
             {% set updateDateTime = exitedStockDates[ticker.ticker] %}
