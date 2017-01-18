@@ -53,6 +53,15 @@
 
 <!-- ACTIVE STOCKS -->
 
+
+<!-- TODO:
+      Make the boxes clickable
+      Banner and background changes
+      Drop-down (log-out, empty link for change password)
+      USIT logo in the banner
+      Page logo, headers
+
+       -->
       <!-- transparent clear table -->
     {% if numActiveStocks != 0 %}
 
@@ -242,12 +251,12 @@
                 {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
                 <td style="color: #DCE3E7;">Total</td>
                 {% if percent < 0 %}
-                  <td style="color: red;">{{gain}}</td>
-                  <td style="color: red;">{{percent}}%</td>
+                  <td style="color: #FF5252;">{{gain}}</td>
+                  <td style="color: #FF5252;">{{percent}}%</td>
                 {% endif %}
                 {% if percent > 0 %}
-                  <td style="color: green;">{{gain}}</td>
-                  <td style="color: green;">{{percent}}%</td>
+                  <td style="color: #69F0AE;">{{gain}}</td>
+                  <td style="color: #69F0AE;">{{percent}}%</td>
                 {% endif %}
               </tr>
             </table>

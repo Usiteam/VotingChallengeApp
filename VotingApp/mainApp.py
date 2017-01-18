@@ -160,6 +160,13 @@ def get_gain(ticker):
         return float(c[1])
     return float(change)
 
+def get_percent_change(ticker):
+    percent = Share(stock.ticker).get_percent_change()
+    string = percent.split("+")
+    if len(string) < 1:
+        return string
+    return string[1]
+
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):
     #print(current_user.id)  #user_id
