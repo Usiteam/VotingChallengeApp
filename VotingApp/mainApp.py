@@ -118,10 +118,10 @@ def dashboard():
     trends = {}
     for stock in current_user.stocks:
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
-        names[stock.ticker] = get_symbol(stock.ticker)
+        names[stock.ticker] = get_name(stock.ticker)
         dates[stock.ticker] = get_datetime(stock.ticker)
         changes[stock.ticker] = get_gain(stock.ticker)
-        percentChanges[stock.ticker] = Share(stock.ticker).get_percent_change()
+        percentChanges[stock.ticker] = get_percent_change(stock.ticker)
     startingPrices = {}
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
@@ -129,18 +129,34 @@ def dashboard():
     exitedStocksNames = {}
     exitedStockDates = {}
     for stock in exitedStocks:
-        exitedStocksNames[stock.ticker] = get_symbol(stock.ticker)
+        exitedStocksNames[stock.ticker] = get_name(stock.ticker)
         exitedStockDates[stock.ticker] = get_datetime(stock.ticker)
     return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames), numActiveStocks = len(current_user.stocks), firstName = current_user.firstName, lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates, changes = changes, percentChanges = percentChanges)
 
-def get_symbol(symbol):
-    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(symbol)
+def get_name(ticker):
+    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
 
     result = requests.get(url).json()
 
     for x in result['ResultSet']['Result']:
-        if x['symbol'] == symbol:
-            return x['name']
+        if x['symbol'] == ticker:
+            return truncate(x['name'])
+
+def truncate(name):
+
+    if (len(name) > 25):
+        words = name.split(" ")
+        length = 0
+        return_name = ""
+        for x in words:
+            if (len(x) + length + 1 < 25):
+                return_name += x + " "
+                length += len(x) + 1
+            else:
+                break
+        return return_name
+
+    return name
 
 def get_datetime(ticker):
     eastern = timezone('US/Eastern')
@@ -161,7 +177,7 @@ def get_gain(ticker):
     return float(change)
 
 def get_percent_change(ticker):
-    percent = Share(stock.ticker).get_percent_change()
+    percent = Share(ticker).get_percent_change()
     string = percent.split("+")
     if len(string) < 1:
         return string

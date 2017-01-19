@@ -4,8 +4,6 @@
     color: black;
     font-size: 60px;
     text-align: center;
-    margin-bottom: 40px;
-    padding: 15px;
 }
 
 .positionLabel{
@@ -17,11 +15,12 @@
 .footer-container{
     height: 20px;
     text-align: center;
+    color: white;
+    padding-bottom: 20px;
 }
 
-.footer-container a{
-    color: black;
-    padding-bottom: 20px;
+.page-container{
+  background-color: #556D79;
 }
 
 .stock-graph{
@@ -56,9 +55,11 @@ h2{
   text-align: center;
   margin-bottom: 15px;
 }
+
 .tbl-header{
   background-color: rgba(255,255,255,0.3);
  }
+
 .tbl-content{
   height:130px;
   overflow-x:auto;
@@ -80,6 +81,22 @@ h2{
   width: 220px;
   margin: 10px;
   font-family: 'Roboto', sans-serif;
+  transition: all 400ms ease-in-out;
+  border-radius: 2px;
+}
+
+.stats-box{
+  padding:0.33em;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0px;
+  border: 0px;
+  text-wrap: normal;
+  background-color: #546d78;
+  color:#E0E0E0;
+  width: 220px;
+  margin: 10px;
+  font-family: 'Roboto', sans-serif;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px;
   transition: all 400ms ease-in-out;
   border-radius: 2px;
@@ -89,13 +106,50 @@ h2{
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px
 }
 
-.ticker-code{
+.ticker-symbol{
   font-size: 25px;
   padding-bottom: 10px;
   padding-left:10px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+}
+
+.modal-title, .modal-body{
+  color: #2a3843;
+}
+
+.stock-description{
+  font-size: 15px;
+}
+
+.modal-dialog{
+  background-color: white;
+}
+
+.ticker-symbol a{
+  color: white;
+}
+
+.gain-description{
+  color: #DCE3E7;
+}
+
+.gain-positive{
+  color: #69F0AE;
+}
+
+.gain-negative{
+  color: #FF5252;
+}
+
+.ticker-price{
+  font-size: 30px;
+}
+
+.ticker-currency{
+  font-size: 20px;
+  color: #9E9E9E;
 }
 
 .ticker-name{
@@ -105,8 +159,34 @@ h2{
   padding-right:10px;
 }
 
-.positions-container{
+.boxes-container{
   display:flex;
+}
+
+.stats-header{
+  text-align: center;
+  color: white;
+  text-decoration: underline;
+  font-size: 25px;
+}
+
+.stats-text{
+  text-align: center;
+  color: white;
+  font-size: 35px;
+}
+
+.positions-container{
+  background-color: white;
+  padding: 15px;
+  margin: 0;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.stats-container{
+  display: flex;
+  justify-content: space-around;
 }
 
 @media screen and (max-width: 500px) {
@@ -117,6 +197,43 @@ h2{
     .ticker-box{
       width: calc(100% - 21px);
     }
+}
+
+.header-banner{
+  display: flex;
+  justify-content: space-between;
+  background-color: #FF7300;
+  align-items: center;
+}
+
+.usit-icon{
+  height: 45px;
+  width: 60px;
+}
+
+.user-name{
+  color: white;
+  text-decoration: none;
+  padding-right: 20px;
+}
+
+.user-name:hover,
+.user-name:active,
+.user-name:visited, 
+.user-name:link{
+  color: white;
+  text-decoration: none;
+}
+
+.dropdown-pull-right {
+  float: right !important;
+  right: 0;
+  left: auto;
+}
+
+.dropdown-pull-right > .dropdown-menu {
+  right: 0;
+  left: auto;
 }
 
 table { 
@@ -145,7 +262,7 @@ table {
   text-align: center;
 }
 
-.exit-date{
+.sell-date{
   font-size: 13px;
   padding-top: 10px;
   text-align: center;
