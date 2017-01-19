@@ -179,8 +179,10 @@ def get_gain(ticker):
 def get_percent_change(ticker):
     percent = Share(ticker).get_percent_change()
     string = percent.split("+")
-    if len(string) < 1:
+    if len(string) <= 1:
         return string
+    print("String")
+    print(string)
     return string[1]
 
 @app.route('/exitPosition/<int:exitIndex>')
