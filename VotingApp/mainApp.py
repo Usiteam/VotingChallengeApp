@@ -74,7 +74,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-
+#TODO need to calculate and send todays, total gains
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -85,17 +85,26 @@ def dashboard():
         totalStocks = len(student.stocks)
         ret = 0
         activeStocks = student.stocks
+        #Totals for each ticker
+        totalGains = {}
+        totalPercents = {}
 
         "Calculates returns on active positions"
         for stock in activeStocks:
-            ret += (float(Share(stock.ticker).get_price()) - stock.startingPrice)/stock.startingPrice
+            if(stock.short):
+                ret += (stock.startingPrice - float(Share(stock.ticker).get_price()))/stock.startingPrice
+            else:
+                ret += (float(Share(stock.ticker).get_price()) - stock.startingPrice)/stock.startingPrice
 
         "Calculates returns on sold positions"
         userTransactions = Transactions.query.filter_by(user_id=student.id)
         totalStocks += userTransactions.count()
         for trans in userTransactions:
-            startingPrice = Tickers.query.filter_by(ticker=trans.ticker).first().startingPrice
-            ret += (trans.end_price - startingPrice)/startingPrice
+            transTicker = Tickers.query.filter_by(ticker=trans.ticker).first()
+            if(transTicker.short):
+                ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
+            else:
+                ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
         if totalStocks is not 0:
             returns[student.id] = ret/totalStocks
         else:
@@ -120,18 +129,32 @@ def dashboard():
         prices[stock.ticker] = float("%.2f" % float(Share(stock.ticker).get_price()))
         names[stock.ticker] = get_name(stock.ticker)
         dates[stock.ticker] = get_datetime(stock.ticker)
+        #TODO make need to take into shorts in get_gain and get_percent_change
         changes[stock.ticker] = get_gain(stock.ticker)
         percentChanges[stock.ticker] = get_percent_change(stock.ticker)
+        if(stock.short):
+            totalGains[stock.ticker] = (stock.startingPrice - float(Share(stock.ticker).get_price()))
+            totalPercents[stock.ticker] = round(((stock.startingPrice - float(Share(stock.ticker).get_price()))/stock.startingPrice)*100, 2)
+        else:
+            totalGains[stock.ticker] = (float(Share(stock.ticker).get_price()) - stock.startingPrice)
+            totalPercents[stock.ticker] = round(((float(Share(stock.ticker).get_price()) - stock.startingPrice)/stock.startingPrice)*100, 2)
     startingPrices = {}
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
     exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
     exitedStocksNames = {}
     exitedStockDates = {}
+    #TODO Have to calculate totalGains and totalPercents for exited stocks
     for stock in exitedStocks:
         exitedStocksNames[stock.ticker] = get_name(stock.ticker)
         exitedStockDates[stock.ticker] = get_datetime(stock.ticker)
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices, names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices, exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames), numActiveStocks = len(current_user.stocks), firstName = current_user.firstName, lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates, changes = changes, percentChanges = percentChanges)
+    print(totalPercents)
+    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
+        names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+        exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
+        numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
+        lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
+        changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
 
 def get_name(ticker):
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
@@ -169,7 +192,11 @@ def get_datetime(ticker):
     return est_d.strftime(fmt)
 
 def get_gain(ticker):
+    print(ticker)
     change = Share(ticker).get_change()
+    #Needs to be replaced with a string to show error
+    if change is None:
+        return 0
     c = change.split("+")
     print(c)
     if (len(c) > 1):
@@ -177,14 +204,18 @@ def get_gain(ticker):
     return float(change)
 
 def get_percent_change(ticker):
+    print(ticker)
     percent = Share(ticker).get_percent_change()
+    #Needs to be replaced with a string to show error
+    if(percent is None):
+        return 0
     string = percent.split("+")
     if len(string) <= 1:
         return string
     print("String")
     print(string)
     return string[1]
-
+#TODO take into account shorts in color of exited positions
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):
     #print(current_user.id)  #user_id

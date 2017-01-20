@@ -153,14 +153,16 @@
 
             </div>
             <div class="ticker-name">{{names[ticker.ticker]}}</div>
+            {% set todayPercent = percentChanges[ticker.ticker] %}
+            {% set todayGain = changes[ticker.ticker] %}
             <div class="ticker-price">
-              {% if gain < 0 %}
+              {% if todayGain < 0 %}
                 <i class="fa fa-arrow-down" style="font-size: 30px"></i>
               {% endif %}
-              {% if gain == 0 %}
+              {% if todayGain == 0 %}
                 <i class="fa fa-arrow-right" style="font-size: 30px"></i>
               {% endif %}
-              {% if gain > 0 %}
+              {% if todayGain > 0 %}
                 <i class="fa fa-arrow-up" style="font-size: 30px"></i>
               {% endif %}
               <span class="ticker-price">{{prices[ticker.ticker]}}</span>
@@ -168,8 +170,6 @@
             </div>
             <table cellpadding="0">
               <tr>
-                {% set todayPercent = percentChanges[ticker.ticker] %}
-                {% set todayGain = changes[ticker.ticker] %}
                 <td class="gain-description">Today</td>
                 {% if todayGain < 0 %}
                   <td class="gain-negative">{{todayGain}}</td>
@@ -181,21 +181,22 @@
                 {% endif %}
               </tr>
               <tr>
+                  <!-- TODO Need to edit this -->
                 {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
                 <td class="gain-description">Total</td>
-                {% if percent < 0 %}
-                  <td class="gain-negative">{{gain}}</td>
-                  <td class="gain-negative">{{percent}}%</td>
+                {% if totalPercents[ticker.ticker] < 0 %}
+                  <td class="gain-negative">{{totalGains[ticker.ticker]}}</td>
+                  <td class="gain-negative">{{(totalPercents[ticker.ticker])}}%</td>
                 {% endif %}
-                {% if percent > 0 %}
-                  <td class="gain-positive">{{gain}}</td>
-                  <td class="gain-positive">{{percent}}%</td>
+                {% if totalPercents[ticker.ticker] >= 0 %}
+                  <td class="gain-positive">{{totalGains[ticker.ticker]}}</td>
+                  <td class="gain-positive">{{totalPercents[ticker.ticker]}}%</td>
                 {% endif %}
               </tr>
             </table>
             {% set updateDateTime = dates[ticker.ticker] %}
             <div class="date-time">{{updateDateTime}}</div>
-          </div>
+        </div>
 
           {% set count = count + 1 %}
           {% endfor %}

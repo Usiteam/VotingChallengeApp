@@ -9,7 +9,7 @@ manager = Manager(app)
 def initdb():
     db.create_all()
     db.session.add(User(firstName="LeBron", lastName="James",email="dilan@webitup.com", password="test", stocks=[Tickers(ticker='ATVI', startingPrice=28.12)]))
-    apple = Tickers(ticker="AAPL", startingPrice=89.8)
+    apple = Tickers(ticker="AAPL", startingPrice=89.8, short=True)
     signet = Tickers(ticker="SIG", startingPrice=90)
     google = Tickers(ticker="GOOG", startingPrice=400)
     aal = Tickers(ticker="AAL", startingPrice=40.00)
