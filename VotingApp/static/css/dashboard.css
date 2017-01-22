@@ -20,7 +20,7 @@
 }
 
 .page-container{
-  background-color: #556D79;
+  background-color: #CF5300;
 }
 
 .stock-graph{
@@ -28,13 +28,30 @@
   padding: 10px;
 }
 
+.positions-title{
+  color: white;
+  background-color: #706E6F;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.stats-title{
+  color: white;
+  background-color: #706E6F;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  text-transform: uppercase;
+  font-weight: 600px;
+  font-size: 45px;
+  text-align: center;
+}
+
 h1{
   font-size: 30px;
-  color: black;
   text-transform: uppercase;
   font-weight: 300;
   text-align: center;
-  margin-bottom: 15px;
+  margin: 0px;
 }
 
 h3{
@@ -76,10 +93,11 @@ h2{
   margin: 0px;
   border: 0px;
   text-wrap: normal;
-  background-color: #546d78;
+  /*background-color: #546d78;*/
+  background-color: #706E6F;
   color:#E0E0E0;
   width: 220px;
-  margin: 10px;
+  margin: 20px;
   font-family: 'Roboto', sans-serif;
   transition: all 400ms ease-in-out;
   border-radius: 2px;
@@ -92,7 +110,7 @@ h2{
   margin: 0px;
   border: 0px;
   text-wrap: normal;
-  background-color: #546d78;
+  background-color: #706E6F;
   color:#E0E0E0;
   width: 220px;
   margin: 10px;
@@ -166,21 +184,19 @@ h2{
 .stats-header{
   text-align: center;
   color: white;
-  text-decoration: underline;
+  text-transform: uppercase;
   font-size: 25px;
 }
 
 .stats-text{
   text-align: center;
   color: white;
-  font-size: 35px;
+  font-size: 25px;
 }
 
 .positions-container{
   background-color: white;
-  padding: 15px;
-  margin: 0;
-  width: 100%;
+  padding: 0px;
   margin-bottom: 40px;
 }
 
@@ -202,19 +218,23 @@ h2{
 .header-banner{
   display: flex;
   justify-content: space-between;
-  background-color: #FF7300;
+  background-color: #706E6F;
   align-items: center;
+  height: 80px;
+  margin-bottom: 43px;
 }
 
 .usit-icon{
   height: 45px;
   width: 60px;
+  margin-left: 20px;
 }
 
 .user-name{
-  color: white;
   text-decoration: none;
+  text-transform: uppercase;
   padding-right: 20px;
+  font-size: 25px;
 }
 
 .user-name:hover,
@@ -238,7 +258,7 @@ h2{
 
 table { 
   border: none;
-  background: #546d78;
+  background: #706E6F;
   width: 100%;
   border-collapse: collapse;
 }
