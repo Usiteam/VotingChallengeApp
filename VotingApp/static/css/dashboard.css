@@ -23,6 +23,11 @@
   background-color: #CF5300;
 }
 
+.dropdown{
+  background-color: white;
+  margin-right: 20px;
+}
+
 .stock-graph{
   width: 100%;
   padding: 10px;
@@ -233,15 +238,16 @@ h2{
 .user-name{
   text-decoration: none;
   text-transform: uppercase;
-  padding-right: 20px;
+  padding: 10px;
   font-size: 25px;
+  color: #706E6F;
 }
 
 .user-name:hover,
 .user-name:active,
 .user-name:visited, 
 .user-name:link{
-  color: white;
+  color: #706E6F;
   text-decoration: none;
 }
 
