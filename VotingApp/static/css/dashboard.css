@@ -107,7 +107,7 @@ h2{
   transition: all 400ms ease-in-out;
   border-radius: 2px;
 }
-
+f
 .stats-box{
   padding:0.33em;
   padding-top: 20px;
@@ -210,13 +210,15 @@ h2{
   justify-content: space-around;
 }
 
-@media screen and (max-width: 500px) {
-    .positions-container{
+@media screen and (max-width: 730px) {
+    .boxes-container{
       display:inline;
+      justify-content: center;
     }
 
     .ticker-box{
-      width: calc(100% - 21px);
+      width: 75%;
+      padding-bottom: 5px;
     }
 }
 
