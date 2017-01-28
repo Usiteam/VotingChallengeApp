@@ -111,11 +111,12 @@
                     <!-- Placeholder for the graph -->
                     <!-- {% set url = "http://chart.finance.yahoo.com/z?s=" + ticker.ticker + "&t=6m&q=l&l=on&z=s&p=m50,m200" %}
                     <img src={{url}} class="stock-graph"> -->
+                    {% if ticker.ticker == "AAPL" %}
                     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                     <script id="graph" type="text/javascript">
                       new TradingView.widget({
-                        "width": 600,
-                        "height": 373,
+                        "width": 570,
+                        "height": 354,
                         "interval": "D",
                         "symbol": "NASDAQ:AAPL",
                         "timezone": "Etc/UTC",
@@ -128,6 +129,45 @@
                         "hideideas": true
                       });
                     </script>
+                    {% endif %}
+                    {% if ticker.ticker == "GOOG" %}
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script id="graph" type="text/javascript">
+                      new TradingView.widget({
+                        "width": 570,
+                        "height": 354,
+                        "interval": "D",
+                        "symbol": "NASDAQ:GOOG",
+                        "timezone": "Etc/UTC",
+                        "theme": "White",
+                        "style": "1",
+                        "locale": "en",
+                        "toolbar_bg": "#f1f3f6",
+                        "enable_publishing": false,
+                        "allow_symbol_change": true,
+                        "hideideas": true
+                      });
+                    </script>
+                    {% endif %}
+                    {% if ticker.ticker == "AAL" %}
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script id="graph" type="text/javascript">
+                      new TradingView.widget({
+                        "width": 570,
+                        "height": 354,
+                        "interval": "D",
+                        "symbol": "NASDAQ:AAL",
+                        "timezone": "Etc/UTC",
+                        "theme": "White",
+                        "style": "1",
+                        "locale": "en",
+                        "toolbar_bg": "#f1f3f6",
+                        "enable_publishing": false,
+                        "allow_symbol_change": true,
+                        "hideideas": true
+                      });
+                    </script>
+                    {% endif %}
                     <!-- Description of the stock (text placeholder) -->
                     <div class="modal-body">
                       <p class="stock-description">Description of stock.</p>
