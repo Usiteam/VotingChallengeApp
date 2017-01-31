@@ -166,12 +166,12 @@ def get_name(ticker):
 
 def truncate(name):
 
-    if (len(name) > 17):
+    if (len(name) > 20):
         words = name.split(" ")
         length = 0
         return_name = ""
         for x in words:
-            if (len(x) + length + 1 < 17):
+            if (len(x) + length + 1 < 20):
                 return_name += x + " "
                 length += len(x) + 1
             else:
