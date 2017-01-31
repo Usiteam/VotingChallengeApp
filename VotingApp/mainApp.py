@@ -148,7 +148,6 @@ def dashboard():
     for stock in exitedStocks:
         exitedStocksNames[stock.ticker] = get_name(stock.ticker)
         exitedStockDates[stock.ticker] = get_datetime(stock.ticker)
-    print(totalPercents)
     return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
         names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
         exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
@@ -167,12 +166,12 @@ def get_name(ticker):
 
 def truncate(name):
 
-    if (len(name) > 25):
+    if (len(name) > 17):
         words = name.split(" ")
         length = 0
         return_name = ""
         for x in words:
-            if (len(x) + length + 1 < 25):
+            if (len(x) + length + 1 < 17):
                 return_name += x + " "
                 length += len(x) + 1
             else:
@@ -192,29 +191,25 @@ def get_datetime(ticker):
     return est_d.strftime(fmt)
 
 def get_gain(ticker):
-    print(ticker)
     change = Share(ticker).get_change()
     #Needs to be replaced with a string to show error
     if change is None:
         return 0
     c = change.split("+")
-    print(c)
     if (len(c) > 1):
         return float(c[1])
     return float(change)
 
 def get_percent_change(ticker):
-    print(ticker)
     percent = Share(ticker).get_percent_change()
     #Needs to be replaced with a string to show error
     if(percent is None):
         return 0
     string = percent.split("+")
     if len(string) <= 1:
-        return string
-    print("String")
-    print(string)
+        return percent
     return string[1]
+
 #TODO take into account shorts in color of exited positions
 @app.route('/exitPosition/<int:exitIndex>')
 def exitPosition(exitIndex):
