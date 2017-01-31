@@ -49,6 +49,8 @@
   font-weight: 600px;
   font-size: 45px;
   text-align: center;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 h1{
@@ -107,7 +109,7 @@ h2{
   transition: all 400ms ease-in-out;
   border-radius: 2px;
 }
-f
+
 .stats-box{
   padding:0.33em;
   padding-top: 20px;
@@ -213,12 +215,33 @@ f
 @media screen and (max-width: 730px) {
     .boxes-container{
       display:inline;
-      justify-content: center;
+    }
+
+    .positions-container{
+      padding-bottom: 2px;
     }
 
     .ticker-box{
       width: 75%;
-      padding-bottom: 5px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .stats-container{
+      display: inline;
+    }
+
+    .stats-title{
+      font-size: 30px;
+    }
+
+    .stats-box{
+      width: 75%;
+      padding: 0;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
     }
 }
 
