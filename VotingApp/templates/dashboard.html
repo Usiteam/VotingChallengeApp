@@ -98,7 +98,7 @@
               {% set id = ticker.ticker + "Modal" %}
               {% set idLink = "#" + id %}
 
-              <a href={{idLink}} role="button" data-toggle="modal">{{ticker.ticker}}</a>
+              <a href={{idLink}} class="modal-link" id="modalLink" role="button" data-toggle="modal">{{ticker.ticker}}</a>
 
               <div class="modal fade" id={{id}} role="dialog">
                 <div class="modal-dialog">

@@ -20,7 +20,7 @@
 }
 
 .page-container{
-  background-color: #CF5300;
+  background-color: #feb47d;
 }
 
 .dropdown{
@@ -242,6 +242,16 @@ h2{
       padding-bottom: 20px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .modal-link{
+      pointer-events: none;
+      cursor: default;
+    }
+
+    #modalLink{
+      pointer-events: none;
+      cursor: default;
     }
 }
 
