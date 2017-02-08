@@ -20,7 +20,7 @@
 }
 
 .page-container{
-  background-color: #feb47d;
+  background-color: white;
 }
 
 .dropdown{
@@ -45,7 +45,6 @@
   background-color: #706E6F;
   padding-top: 25px;
   padding-bottom: 25px;
-  text-transform: uppercase;
   font-weight: 600px;
   font-size: 45px;
   text-align: center;
@@ -55,7 +54,6 @@
 
 h1{
   font-size: 30px;
-  text-transform: uppercase;
   font-weight: 300;
   text-align: center;
   margin: 0px;
@@ -101,7 +99,7 @@ h2{
   border: 0px;
   text-wrap: normal;
   /*background-color: #546d78;*/
-  background-color: #706E6F;
+  background-color: #455A64;
   color:#E0E0E0;
   width: 220px;
   margin: 20px;
@@ -117,8 +115,8 @@ h2{
   margin: 0px;
   border: 0px;
   text-wrap: normal;
-  background-color: #706E6F;
-  color:#E0E0E0;
+  background-color: #455A64;
+  color: #E0E0E0;
   width: 220px;
   margin: 10px;
   font-family: 'Roboto', sans-serif;
@@ -191,7 +189,6 @@ h2{
 .stats-header{
   text-align: center;
   color: white;
-  text-transform: uppercase;
   font-size: 25px;
 }
 
@@ -272,7 +269,6 @@ h2{
 
 .user-name{
   text-decoration: none;
-  text-transform: uppercase;
   padding: 10px;
   font-size: 25px;
   color: #706E6F;
@@ -299,7 +295,7 @@ h2{
 
 table { 
   border: none;
-  background: #706E6F;
+  background: #455A64;
   width: 100%;
   border-collapse: collapse;
 }
