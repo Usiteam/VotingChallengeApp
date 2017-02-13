@@ -24,8 +24,11 @@
 }
 
 .dropdown{
-  background-color: white;
+  background-color: #F7CE3E;
   margin-right: 20px;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .stock-graph{
@@ -35,21 +38,19 @@
 
 .positions-title{
   color: white;
-  background-color: #706E6F;
+  background-color: #294441;
   padding-top: 25px;
   padding-bottom: 25px;
 }
 
 .stats-title{
   color: white;
-  background-color: #706E6F;
+  background-color: #1A2930;
   padding-top: 25px;
   padding-bottom: 25px;
-  font-weight: 600px;
-  font-size: 45px;
+  font-size: 30px;
+  font-weight: 300;
   text-align: center;
-  padding-left: 8px;
-  padding-right: 8px;
 }
 
 h1{
@@ -103,7 +104,7 @@ h2{
   color:#E0E0E0;
   width: 220px;
   margin: 20px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans';
   transition: all 400ms ease-in-out;
   border-radius: 2px;
 }
@@ -115,14 +116,16 @@ h2{
   margin: 0px;
   border: 0px;
   text-wrap: normal;
-  background-color: #455A64;
+  background-color: #1A2930;
   color: #E0E0E0;
   width: 220px;
   margin: 10px;
-  font-family: 'Roboto', sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: 'Open Sans';
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px;
   transition: all 400ms ease-in-out;
-  border-radius: 2px;
+  border-radius: 5px;
 }
 
 .ticker-box:hover{
@@ -186,10 +189,20 @@ h2{
   display:flex;
 }
 
+.page-header{
+  color: #1A2930;
+  font-size: 30px;
+  font-weight: 300;
+  border-bottom: 0px;
+  padding-left: 50px;
+  margin-bottom: -20px;
+}
+
 .stats-header{
   text-align: center;
   color: white;
-  font-size: 25px;
+  font-size: 15px;
+  padding-bottom: 5px;
 }
 
 .stats-text{
@@ -199,7 +212,7 @@ h2{
 }
 
 .positions-container{
-  background-color: white;
+  background-color: #CAC0B6;
   padding: 0px;
   margin-bottom: 40px;
 }
@@ -207,6 +220,7 @@ h2{
 .stats-container{
   display: flex;
   justify-content: space-around;
+  background-color: #CAC0B6;
 }
 
 @media screen and (max-width: 730px) {
@@ -228,10 +242,6 @@ h2{
       display: inline;
     }
 
-    .stats-title{
-      font-size: 30px;
-    }
-
     .stats-box{
       width: 75%;
       padding: 0;
@@ -250,35 +260,41 @@ h2{
       pointer-events: none;
       cursor: default;
     }
+
+    .page-header{
+      text-align: center;
+      padding-left: 0px;
+    }
 }
 
 .header-banner{
   display: flex;
   justify-content: space-between;
-  background-color: #706E6F;
+  background-color: #1A2930;
   align-items: center;
   height: 80px;
   margin-bottom: 43px;
 }
 
-.usit-icon{
-  height: 45px;
-  width: 60px;
-  margin-left: 20px;
+.usit-branding{
+  font-size: 35px;
+  margin-left: 40px;
+  color: white;
 }
 
 .user-name{
   text-decoration: none;
-  padding: 10px;
-  font-size: 25px;
-  color: #706E6F;
+  text-transform: uppercase;
+  padding: 25px;
+  font-size: 20px;
+  color: #1A2930;
 }
 
 .user-name:hover,
 .user-name:active,
 .user-name:visited, 
 .user-name:link{
-  color: #706E6F;
+  color: #1A2930;
   text-decoration: none;
 }
 
@@ -314,6 +330,11 @@ table {
   padding-bottom: 10px;
 }
 
+.fa-angle-down{
+  color: #1A2930;
+  padding-left: 10px;
+}
+
 .percent-gain{
   font-size: 15px;
   text-align: center;
@@ -339,12 +360,16 @@ td{
   color: #fff;
 }
 
+.fa-angle-down:before{
+  padding-left: 10px;
+}
+
 /* demo styles */
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body{
   background-color: white;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans';
 }
 section{
   margin: 50px;
@@ -358,7 +383,7 @@ section{
   clear: left;
   text-align: center;
   font-size: 10px;
-  font-family: arial;
+  font-family: 'Open Sans';
   color: #fff;
 }
 .made-with-love i {
