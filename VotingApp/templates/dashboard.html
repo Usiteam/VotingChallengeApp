@@ -113,7 +113,7 @@
                     <!-- Placeholder for the graph -->
                     <!-- {% set url = "http://chart.finance.yahoo.com/z?s=" + ticker.ticker + "&t=6m&q=l&l=on&z=s&p=m50,m200" %}
                     <img src={{url}} class="stock-graph"> -->
-                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <!-- <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                     <script id="graph" type="text/javascript">
                       new TradingView.widget({
                         "width": 570,
@@ -129,7 +129,7 @@
                         "allow_symbol_change": true,
                         "hideideas": true
                       });
-                    </script>
+                    </script> -->
                     <!-- Description of the stock (text placeholder) -->
                     <div class="modal-body">
                       <p class="stock-description">Description of stock.</p>
@@ -174,16 +174,14 @@
             </div>
             <div class="ticker-name">{{names[ticker.ticker]}}</div>
             <!-- Change these to not store the values -->
-            {% set todayPercent = percentChanges[ticker.ticker] %}
-            {% set todayGain = changes[ticker.ticker] %}
             <div class="ticker-price">
-              {% if todayGain < 0 %}
+              {% if changes[ticker.ticker] < 0 %}
                 <i class="fa fa-arrow-down" style="font-size: 30px"></i>
               {% endif %}
-              {% if todayGain == 0 %}
+              {% if changes[ticker.ticker] == 0 %}
                 <i class="fa fa-arrow-right" style="font-size: 30px"></i>
               {% endif %}
-              {% if todayGain > 0 %}
+              {% if changes[ticker.ticker] > 0 %}
                 <i class="fa fa-arrow-up" style="font-size: 30px"></i>
               {% endif %}
               <span class="ticker-price">{{prices[ticker.ticker]}}</span>
@@ -192,13 +190,13 @@
             <table cellpadding="0">
               <tr>
                 <td class="gain-description">Today</td>
-                {% if todayGain < 0 %}
-                  <td class="gain-negative">{{todayGain}}</td>
-                  <td class="gain-negative">{{todayPercent}}</td>
+                {% if changes[ticker.ticker] < 0 %}
+                  <td class="gain-negative">{{changes[ticker.ticker]}}</td>
+                  <td class="gain-negative">{{percentChanges[ticker.ticker]}}</td>
                 {% endif %}
-                {% if todayGain >= 0 %}
-                  <td class="gain-positive">{{todayGain}}</td>
-                  <td class="gain-positive">{{todayPercent}}</td>
+                {% if changes[ticker.ticker] >= 0 %}
+                  <td class="gain-positive">{{changes[ticker.ticker]}}</td>
+                  <td class="gain-positive">{{percentChanges[ticker.ticker]}}</td>
                 {% endif %}
               </tr>
               <tr>
@@ -215,8 +213,7 @@
                 {% endif %}
               </tr>
             </table>
-            {% set updateDateTime = dates[ticker.ticker] %}
-            <div class="date-time">{{updateDateTime}}</div>
+            <div class="date-time">{{dates[ticker.ticker]}}</div>
         </div>
 
           {% set count = count + 1 %}
@@ -258,7 +255,7 @@
                       <h4 class="modal-title">{{ticker.ticker}}</h4>
                     </div>
                     <!-- Placeholder for the graph -->
-                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <!-- <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                     <script id="graph" type="text/javascript">
                       new TradingView.widget({
                         "width": 570,
@@ -274,7 +271,7 @@
                         "allow_symbol_change": true,
                         "hideideas": true
                       });
-                    </script>
+                    </script> -->
                     <!-- Description of the stock (text placeholder) -->
                     <div class="modal-body">
                       <p class="stock-description">Description of stock.</p>
@@ -303,15 +300,14 @@
             </div>
             <table cellpadding="0">
               <tr>
-                {% set percent = (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') %}
                 <td class="gain-description">Total</td>
-                {% if percent < 0 %}
+                {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') < 0 %}
                   <td class="gain-negative">{{gain}}</td>
-                  <td class="gain-negative">{{percent}}%</td>
+                  <td class="gain-negative">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
                 {% endif %}
-                {% if percent > 0 %}
+                {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') > 0 %}
                   <td class="gain-positive">{{gain}}</td>
-                  <td class="gain-positive">{{percent}}%</td>
+                  <td class="gain-positive">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
                 {% endif %}
               </tr>
             </table>
