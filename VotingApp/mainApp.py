@@ -12,7 +12,6 @@ from pytz import timezone
 import requests
 import time
 import json
-from rtstock.stock import Stock
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -172,9 +171,14 @@ def dashboard():
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
 
-    result = requests.get(url).text.split("// ")[1].split("[")[1].split("]")[0].encode('ascii', 'ignore')
+    result = requests.get(url).text.split("// ")
 
-    rjson = json.loads(result)
+    if len(result) > 1:
+        rjson = json.loads(result[1])
+    else:
+        rjson = json.loads(result)
+
+
     return rjson
 
 def get_info(ticker):
@@ -191,13 +195,13 @@ def get_info(ticker):
             info['name'] = truncate(x['name'])
 
     # 1: Get price
-    info['price'] = float(rjson[u'el'])
+    info['price'] = float(rjson[0][u'l'])
 
     # 2: Get datetime
-    info['datetime'] = rjson[u'elt']
+    info['datetime'] = rjson[0][u'lt']
 
     # 3: Get gain
-    change = rjson[u'c']
+    change = rjson[0][u'c']
     if change is None:
         info['gain'] = 0
     c = change.split("+")
@@ -206,13 +210,13 @@ def get_info(ticker):
     info['gain'] = float(change)
 
     # 4: Get percent change
-    info['percentchange'] = float(rjson[u'cp'])
+    info['percentchange'] = float(rjson[0][u'cp'])
 
     return info
 
 def get_price(ticker):
     rjson = get_json(ticker)
-    return rjson[u'el']
+    return float(rjson[0][u'l'])
 
 def truncate(name):
     if (len(name) > 20):
