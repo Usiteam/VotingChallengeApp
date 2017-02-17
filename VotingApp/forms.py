@@ -19,3 +19,9 @@ class SignUpForm(Form):
     setEmail = StringField('')
     setPassword = PasswordField('')
     setPassword2 = PasswordField('')
+
+class EmailForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
+class PasswordForm(Form):
+    password = PasswordField('Email', validators=[DataRequired()])

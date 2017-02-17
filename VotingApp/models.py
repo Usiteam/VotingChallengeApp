@@ -5,11 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 import json
 import requests
+from flask_security import RoleMixin
 
 ticker_identifier = db.Table('student_identifier',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('ticker_id', db.Integer, db.ForeignKey('tickers.id'))
 )
+#required for Flask-Security, could be useful later for admin screen
+roles_users = db.Table('roles_users',
+		db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+		db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
@@ -33,8 +38,11 @@ class User(db.Model, UserMixin):
     lastName = db.Column(db.String(80))
     email = db.Column(db.String(80), unique=True)
     password_hash = db.Column(db.String)
+    active = db.Column(db.Boolean)
     stocks = db.relationship('Tickers', secondary=ticker_identifier, backref='user')
     transactions = db.relationship('Transactions', backref='user')
+    #required for Flask-Security
+    roles =  db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     @property
     def ret(self):
@@ -101,3 +109,9 @@ class Transactions(db.Model, UserMixin):
     ticker = db.Column(db.Integer, db.ForeignKey('tickers.id'), nullable=False)
     date = db.Column(db.String)
     end_price = db.Column(db.Integer)
+
+# Flask Security
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    description = db.Column(db.String(80))

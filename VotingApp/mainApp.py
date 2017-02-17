@@ -5,13 +5,17 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from models import User, Tickers, Transactions
-from VotingApp import db, app, login_manager
+from models import User, Tickers, Transactions, Role
+from VotingApp import db, app, login_manager, mail
 from yahoo_finance import Share
 from pytz import timezone
 import requests
 import time
 import json
+import smtplib
+from itsdangerous import URLSafeTimedSerializer
+from flask.ext.security import Security, SQLAlchemyUserDatastore, \
+    UserMixin, RoleMixin, login_required
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,6 +23,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # app.config['SECRET_KEY'] = '~t\x86\xc9\x1ew\x8bOcX\x85O\xb6\xa2\x11kL\xd1\xce\x7f\x14<y\x9e'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'usit.db')
 # db = SQLAlchemy(app)
+
+
+# Configure Flask Security
+# TODO dont know if we need this line, I don't have roles
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+
 
 @login_manager.user_loader
 def load_user(userid):
