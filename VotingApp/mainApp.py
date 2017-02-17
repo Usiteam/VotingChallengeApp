@@ -37,7 +37,7 @@ def load_user(userid):
     return User.query.get(int(userid))
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/login', methods=['GET', 'POST'])
+#@app.route('/login', methods=['GET', 'POST'])
 def index():
     form = forms.LoginForm()
     setForm = forms.SignUpForm()
