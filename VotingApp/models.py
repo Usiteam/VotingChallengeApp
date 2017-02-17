@@ -1,13 +1,31 @@
 from datetime import datetime
 from VotingApp import db
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
-
+import json
+import requests
 
 ticker_identifier = db.Table('student_identifier',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('ticker_id', db.Integer, db.ForeignKey('tickers.id'))
 )
+
+def get_json(ticker):
+    url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
+
+    result = requests.get(url).text.split("// ")
+
+    if len(result) > 1:
+        rjson = json.loads(result[1])
+    else:
+        rjson = json.loads(result)
+
+    return rjson
+
+def get_price(ticker):
+    rjson = get_json(ticker)
+    return float(rjson[0][u'l'])
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +35,36 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String)
     stocks = db.relationship('Tickers', secondary=ticker_identifier, backref='user')
     transactions = db.relationship('Transactions', backref='user')
+
+    @property
+    def ret(self):
+        ret = 0
+        totalStocks = 0
+
+        for stock in self.stocks:
+            price = float(get_price(stock.ticker))
+
+            if (stock.short):
+                ret += (stock.startingPrice - price)/stock.startingPrice
+            else:
+                ret += (price - stock.startingPrice)/stock.startingPrice
+
+            totalStocks += 1
+
+        for trans in self.transactions:
+            transTicker = Tickers.query.filter_by(ticker=trans.ticker).first()
+
+            if(transTicker.short):
+                ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
+            else:    
+                ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
+
+            totalStocks += 1
+
+        if totalStocks != 0:
+            return ret/totalStocks
+        else:
+            return 0
 
     @property
     def password(self):

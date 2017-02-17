@@ -84,39 +84,11 @@ def loading():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    print("Dashboard, begin", time.time())
     """Getting Position on Leaderboard"""
     allUsers = User.query.all()
     returns = {}
     for student in allUsers:
-        totalStocks = len(student.stocks)
-        ret = 0
-        activeStocks = student.stocks
-        #Totals for each ticker
-        totalGains = {}
-        totalPercents = {}
-
-        "Calculates returns on active positions"
-        for stock in activeStocks:
-            if(stock.short):
-                ret += (stock.startingPrice - float(get_price(stock.ticker)))/stock.startingPrice
-            else:
-                ret += (float(get_price(stock.ticker)) - stock.startingPrice)/stock.startingPrice
-
-        "Calculates returns on sold positions"
-        userTransactions = Transactions.query.filter_by(user_id=student.id)
-        totalStocks += userTransactions.count()
-        for trans in userTransactions:
-            transTicker = Tickers.query.filter_by(ticker=trans.ticker).first()
-            if(transTicker.short):
-                ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
-            else:
-                ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
-        if totalStocks is not 0:
-            returns[student.id] = ret/totalStocks
-        else:
-            returns[student.id] = 0
-    print("Dashboard, end calculation of returns on active/sold positions", time.time())
+        returns[student.id] = student.ret
     "Sorts the dictionary by returns"
     ret_tups = sorted(returns.items(), key=operator.itemgetter(1), reverse=True)
     "Finds leadboard position"
@@ -125,7 +97,6 @@ def dashboard():
         if userid is current_user.id:
             break
         standing += 1
-    print("Dashboard, found leaders", time.time())
     """Finished getting position"""
     prices = {}
     names = {}
@@ -133,6 +104,8 @@ def dashboard():
     changes = {}
     percentChanges = {}
     trends = {}
+    totalGains = {}
+    totalPercents = {}
     for stock in current_user.stocks:
         info = get_info(stock.ticker)
         prices[stock.ticker] = info['price']
@@ -148,19 +121,16 @@ def dashboard():
             totalGains[stock.ticker] = (prices[stock.ticker] - stock.startingPrice)
             totalPercents[stock.ticker] = round(((prices[stock.ticker] - stock.startingPrice)/stock.startingPrice)*100, 2)
     startingPrices = {}
-    print("Dashboard, got data on all stocks", time.time())
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
     exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
     exitedStocksNames = {}
     exitedStockDates = {}
     #TODO Have to calculate totalGains and totalPercents for exited stocks
-    print("Dashboard, exitedStocks", time.time())
     for stock in exitedStocks:
         info = get_info(stock.ticker)
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
-    print("Dashboard, finally returning everything and rendering template", time.time())
     return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
         names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
         exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
@@ -177,7 +147,6 @@ def get_json(ticker):
         rjson = json.loads(result[1])
     else:
         rjson = json.loads(result)
-
 
     return rjson
 
