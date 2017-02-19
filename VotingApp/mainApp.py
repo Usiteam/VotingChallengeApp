@@ -30,6 +30,54 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
+def get_json(ticker):
+    url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
+
+    result = requests.get(url).text.split("// ")
+
+    if len(result) > 1:
+        rjson = json.loads(result[1])
+    else:
+        rjson = json.loads(result)
+
+    return rjson
+
+def get_price(ticker):
+    rjson = get_json(ticker)
+    return float(rjson[0][u'l'])
+
+def update_ret(self, stocks, transactions):
+    ret = 0
+    totalStocks = 0
+    average_ret = 0
+
+    for stock in stocks:
+        price = float(get_price(stock.ticker))
+
+        if (stock.short):
+            ret += (stock.startingPrice - price)/stock.startingPrice
+        else:
+            ret += (price - stock.startingPrice)/stock.startingPrice
+
+        totalStocks += 1
+
+    for trans in transactions:
+        transTicker = Tickers.query.filter_by(ticker=trans.ticker).first()
+
+        if(transTicker.short):
+            ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
+        else:    
+            ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
+
+        totalStocks += 1
+
+    if totalStocks != 0:
+        average_ret = ret/totalStocks
+    else:
+        average_ret = 0
+
+    db.session.query(User).filter_by(id=self.id).first().ret = average_ret
+    db.session.commit()
 
 
 @login_manager.user_loader

@@ -1,4 +1,4 @@
-from VotingApp.mainApp import app, db
+from VotingApp.mainApp import app, db, update_ret
 from VotingApp.models import User, Tickers
 from flask.ext.script import Manager, prompt_bool
 import requests
@@ -25,6 +25,11 @@ def dropdb():
         "Are you sure you want to lose all your data"):
         db.drop_all()
         print 'Dropped the database'
+
+@manager.command
+def refreshdb():
+    for student in User.query.all():
+        update_ret(student, student.stocks, student.transactions)
 
 if __name__ == '__main__':
     manager.run()
