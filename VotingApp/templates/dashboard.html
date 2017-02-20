@@ -48,6 +48,37 @@
     <div class="page-header">Voting Challenge Dashboard</div>
 
     <!-- Total Returns -->
+    {% if rankings %}
+      <section class="positions-container">
+
+        <div class="stats-title">
+          Rankings
+        </div>
+
+        <div class="stats-container">
+          <table style="width: 100%">
+            <tr class="admin-rankings-header">
+              <th class="admin-rankings-header-text">Rank</th>
+              <th class="admin-rankings-header-text">Name</th>
+              <th class="admin-rankings-header-text">Return</th>
+            </tr>
+            {% set count = 1 %}
+            {% for user in rankings %}
+              {% set returnDisplay = (user.ret*100)|round(2, 'common') %}
+              <tr class="admin-rankings-item">
+                <th class="admin-rankings-item-text">{{count}}</th>
+                <th class="admin-rankings-item-text">{{user.firstName}} {{user.lastName}}</th>
+                <th class="admin-rankings-item-text">{{returnDisplay}}%</th>
+              </tr> 
+              {% set count = count + 1 %}
+            {% endfor %}
+          </table>
+        </div>
+
+      </section>
+
+    {% endif %}
+
     <section class="positions-container">
 
       <div class="stats-title">
@@ -72,13 +103,7 @@
           <div class="stats-text">0</div>
         </div>
       </div>
-
-        <!-- <div class="stats-text">
-          <h2> Welcome, {{firstName}} {{lastName}}!</h2>
-          <h3>Rank: {{standing}}</h3>
-          {% set totalReturnDisplay = (totalReturn*100)|round(2, 'common') %}
-          <h3>Total Return: {{totalReturnDisplay}}%</h3>
-        </div> -->
+      
     </section>
 
 <!-- ACTIVE STOCKS -->
@@ -188,7 +213,7 @@
               <span class="ticker-price">{{prices[ticker.ticker]}}</span>
               <span class="ticker-currency">USD</span>
             </div>
-            <table cellpadding="0">
+            <table cellpadding="0" class="change-values">
               <tr>
                 <td class="gain-description">Today</td>
                 {% if changes[ticker.ticker] < 0 %}
@@ -299,7 +324,7 @@
               <span class="ticker-price">{{ticker.end_price}}</span>
               <span class="ticker-currency">USD</span>
             </div>
-            <table cellpadding="0">
+            <table cellpadding="0" class="change-values">
               <tr>
                 <td class="gain-description">Total</td>
                 {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') < 0 %}

@@ -30,6 +30,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
+def sort_users_by_return(item):
+    return item.ret
+
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
 
@@ -151,6 +154,7 @@ def dashboard():
         returns[student.id] = student.ret
     "Sorts the dictionary by returns"
     ret_tups = sorted(returns.items(), key=operator.itemgetter(1), reverse=True)
+    users_tups = sorted(allUsers, key=sort_users_by_return, reverse=True)
     "Finds leadboard position"
     standing = 1
     for userid, ret in ret_tups:
@@ -191,12 +195,20 @@ def dashboard():
         info = get_info(stock.ticker)
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
-    return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
-        names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
-        exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
-        numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
-        lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
-        changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
+    if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
+        return render_template('dashboard.html', rankings = users_tups, stocks=current_user.stocks, prices=prices,
+            names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
+            numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
+            lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
+            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
+    else:
+        return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
+            names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
+            numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
+            lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
+            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
 
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)

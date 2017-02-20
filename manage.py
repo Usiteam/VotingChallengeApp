@@ -1,5 +1,5 @@
 from VotingApp.mainApp import app, db, update_ret
-from VotingApp.models import User, Tickers
+from VotingApp.models import User, Tickers, Role
 from flask.ext.script import Manager, prompt_bool
 import requests
 
@@ -13,8 +13,9 @@ def initdb():
     google = Tickers(ticker="GOOG", startingPrice=400)
     aal = Tickers(ticker="AAL", startingPrice=40.00)
     tesla = Tickers(ticker="TSLA", startingPrice=50.00)
+    admin = Role(name="Admin", description="Gets to look at all the rankings.")
     db.session.add(User(firstName="Dilan", lastName="Hira",email="dilan@utexas.edu", password="test", stocks=[apple, signet]))
-    db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test", stocks=[google, apple, signet, aal, tesla]))
+    db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test", stocks=[google, apple, signet, aal, tesla], roles=[admin]))
     #db.session.add(apple)
     db.session.commit()
     print 'Initialized the database'

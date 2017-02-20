@@ -9,7 +9,29 @@
 .positionLabel{
     color: black;
     font-size: 25px;
+}
 
+.admin-rankings-header{
+  background-color: #F7CE3E;
+  color: #1A2930;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+.admin-rankings-item{
+  background-color: rgba(192, 192, 192, 0.5);
+  color: #1A2930;
+  font-size: 15px;
+}
+
+.admin-rankings-header-text{
+  text-align: center;
+  padding: 5px 0 5px 0;
+}
+
+.admin-rankings-item-text{
+  text-align: center;
+  padding: 5px 0 5px 0;
 }
 
 .footer-container{
@@ -321,7 +343,7 @@ h2{
   left: auto;
 }
 
-table { 
+.change-values { 
   border: none;
   background: #455A64;
   width: 100%;
