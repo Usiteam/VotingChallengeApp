@@ -308,6 +308,10 @@ h2{
   .dropdown{
     margin-left:20px;
   }
+
+  .admin-rankings-header{
+    font-size: 15px;
+  }
 }
 
 .usit-branding{
