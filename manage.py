@@ -1,6 +1,7 @@
 from VotingApp.mainApp import app, db, update_ret, add_stock
 from VotingApp.models import User, Tickers, Role
 from flask.ext.script import Manager, prompt_bool
+from openpyxl import load_workbook, Workbook
 import requests
 
 manager = Manager(app)
@@ -34,12 +35,22 @@ def refreshdb():
 
 @manager.command
 def addstock():
+    wb = load_workbook(filename="Workbook1.xlsx")
+    ws = wb.active
+
     symbol = str(raw_input("Ticker: "))
-    price = raw_input("Starting price: $")
-    shorted = prompt_bool("Short?")
-    stock = Tickers(ticker=symbol, startingPrice=price, short=shorted)
-    for student in User.query.all():
-        add_stock(student, stock)
+    price = int(raw_input("Starting price: $"))
+    num_votes = int(raw_input("How many votes were there? "))
+
+    for index in range(1, num_votes + 1):
+        if str(ws['B' + str(index)].value) == 'Long':
+            stock = Tickers(ticker=symbol, startingPrice=price, short=False)
+        elif str(ws['B' + str(index)].value) == 'Short':
+            stock = Tickers(ticker=symbol, startingPrice=price, short=True)
+
+        if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
+            student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+            add_stock(student, stock)
 
 if __name__ == '__main__':
     manager.run()

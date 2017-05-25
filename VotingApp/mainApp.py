@@ -85,7 +85,6 @@ def update_ret(self, stocks, transactions):
 def add_stock(self, stock):
     db.session.query(User).filter_by(id=self.id).first().stocks.append(stock)
     db.session.commit()
-    update_ret(self, self.stocks, self.transactions)
 
 @login_manager.user_loader
 def load_user(userid):
@@ -218,6 +217,11 @@ def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
 
     result = requests.get(url).text.split("// ")
+    print("=================================================")
+    print("TICKER: " + str(ticker))
+    print("HERE IS WHERE THE RESULT IS SUPPOSED TO GO")
+    print(requests.get(url).text.split("// "))
+    print("=================================================")
 
     if len(result) > 1:
         rjson = json.loads(result[1])
