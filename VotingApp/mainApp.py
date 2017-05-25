@@ -82,6 +82,10 @@ def update_ret(self, stocks, transactions):
     db.session.query(User).filter_by(id=self.id).first().ret = average_ret
     db.session.commit()
 
+def add_stock(self, stock):
+    db.session.query(User).filter_by(id=self.id).first().stocks.append(stock)
+    db.session.commit()
+    update_ret(self, self.stocks, self.transactions)
 
 @login_manager.user_loader
 def load_user(userid):

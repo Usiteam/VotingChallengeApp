@@ -1,4 +1,4 @@
-from VotingApp.mainApp import app, db, update_ret
+from VotingApp.mainApp import app, db, update_ret, add_stock
 from VotingApp.models import User, Tickers, Role
 from flask.ext.script import Manager, prompt_bool
 import requests
@@ -31,6 +31,15 @@ def dropdb():
 def refreshdb():
     for student in User.query.all():
         update_ret(student, student.stocks, student.transactions)
+
+@manager.command
+def addstock():
+    symbol = str(raw_input("Ticker: "))
+    price = raw_input("Starting price: $")
+    shorted = prompt_bool("Short?")
+    stock = Tickers(ticker=symbol, startingPrice=price, short=shorted)
+    for student in User.query.all():
+        add_stock(student, stock)
 
 if __name__ == '__main__':
     manager.run()
