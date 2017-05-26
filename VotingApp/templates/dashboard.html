@@ -79,6 +79,30 @@
 
     {% endif %}
 
+    <!-- ADD A STOCK -->
+
+    {% if isAdmin %}
+
+      <section class="positions-container">
+
+        <div class="stats-title">
+          <h1>New Stock</h1>
+        </div>
+
+        <div class="boxes-container">
+          <form action = "uploader" method = "POST" 
+             enctype = "multipart/form-data">
+             Ticker<input type="text" name="ticker" /><br>
+             Starting Price<input type="text" name="price" /><br>
+             <input type = "file" name = "file" /><br>
+             <input type = "submit"/>
+          </form>
+        </div>
+
+      </section>
+
+    {% endif %}
+
     <section class="positions-container">
 
       <div class="stats-title">
@@ -220,7 +244,7 @@
                 <td class="gain-description">Today</td>
                 {% if changes[ticker.ticker] < 0 %}
                   <td class="gain-negative">{{todayChange}}</td>
-                  <td class="gain-negative">-{{percentChanges[ticker.ticker]}}%</td>
+                  <td class="gain-negative">{{percentChanges[ticker.ticker]}}%</td>
                 {% endif %}
                 {% if changes[ticker.ticker] >= 0 %}
                   <td class="gain-positive">{{todayChange}}</td>

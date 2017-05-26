@@ -9,6 +9,7 @@ from models import User, Tickers, Transactions, Role
 from VotingApp import db, app, login_manager, mail
 from yahoo_finance import Share
 from pytz import timezone
+from werkzeug import secure_filename
 import requests
 import time
 import json
@@ -16,6 +17,8 @@ import smtplib
 from itsdangerous import URLSafeTimedSerializer
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
     UserMixin, RoleMixin, login_required
+from openpyxl import load_workbook, Workbook
+import ntpath
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -186,6 +189,8 @@ def dashboard():
             totalGains[stock.ticker] = float('%.2f' % (stock.startingPrice - prices[stock.ticker]))
             totalPercents[stock.ticker] = round(((stock.startingPrice - prices[stock.ticker])/stock.startingPrice)*100, 2)
             shorts[stock.ticker] = True
+            changes[stock.ticker] *= -1
+            percentChanges[stock.ticker] *= -1
         else:
             totalGains[stock.ticker] = float('%.2f' % (prices[stock.ticker] - stock.startingPrice))
             totalPercents[stock.ticker] = round(((prices[stock.ticker] - stock.startingPrice)/stock.startingPrice)*100, 2)
@@ -204,7 +209,7 @@ def dashboard():
         exitedStockDates[stock.ticker] = info['datetime']
         exitedGains[stock.ticker] = stock.returns
     if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
-        return render_template('dashboard.html', rankings = users_tups, stocks=current_user.stocks, prices=prices,
+        return render_template('dashboard.html', isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
             names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
@@ -212,7 +217,7 @@ def dashboard():
             changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
             exitedGains = exitedGains)
     else:
-        return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
+        return render_template('dashboard.html', isAdmin=False, stocks=current_user.stocks, prices=prices,
             names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
@@ -266,7 +271,6 @@ def get_info(ticker):
 
     # 4: Get percent change
     # info['percentchange'] = float(rjson[0][u'cp'])
-    print(stock.get_percent_change())
     percentChange = stock.get_percent_change()
     percentChange = percentChange.split("%")[0]
     if len(percentChange.split("+")) > 1:
@@ -337,5 +341,46 @@ def exitPosition(exitIndex):
 @app.route('/loggedin')
 def loggedin():
     return render_template('loggedin.html')
+
+@app.route('/upload')
+def upload():
+   return render_template('upload.html')
+    
+@app.route('/uploader', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      f.save(secure_filename(f.filename))
+      print(request)
+      addstock(f.filename, request.form['ticker'], float(request.form['price']))
+      return 'stocks updated'
+
+def addstock(name, symbol, price):
+    wb = load_workbook(filename=name)
+    ws = wb.active
+
+    index = 1
+
+    while ws['A' + str(index)].value:
+        if str(ws['B' + str(index)].value) == 'Long':
+            if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
+                stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
+                print("I FOUND THE STOCK ALREADY")
+            else:
+                stock = Tickers(ticker=symbol, startingPrice=price, short=False)
+        elif str(ws['B' + str(index)].value) == 'Short':
+            if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
+                stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
+                print("I FOUND THE STOCK ALREADY")
+            else:
+                stock = Tickers(ticker=symbol, startingPrice=price, short=True)
+
+        if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
+            student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+            add_stock(student, stock)
+
+        index += 1
+
+
 if __name__ == '__main__':
     app.run(debug=True)
