@@ -220,11 +220,11 @@
                 <td class="gain-description">Today</td>
                 {% if changes[ticker.ticker] < 0 %}
                   <td class="gain-negative">{{todayChange}}</td>
-                  <td class="gain-negative">{{percentChanges[ticker.ticker]}}</td>
+                  <td class="gain-negative">-{{percentChanges[ticker.ticker]}}%</td>
                 {% endif %}
                 {% if changes[ticker.ticker] >= 0 %}
                   <td class="gain-positive">{{todayChange}}</td>
-                  <td class="gain-positive">{{percentChanges[ticker.ticker]}}</td>
+                  <td class="gain-positive">{{percentChanges[ticker.ticker]}}%</td>
                 {% endif %}
               </tr>
               <tr>

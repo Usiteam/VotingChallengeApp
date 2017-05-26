@@ -252,7 +252,7 @@ def get_info(ticker):
 
     # 2: Get datetime
     # info['datetime'] = rjson[0][u'lt']
-    info['datetime'] = stock.get_trade_datetime()
+    info['datetime'] = getdatetime(ticker)
 
     # 3: Get gain
     # change = rjson[0][u'c']
@@ -277,6 +277,14 @@ def get_info(ticker):
     info['percentchange'] = float(percentChange)
 
     return info
+
+def getdatetime(ticker):
+    fromAPIString = Share(ticker).get_trade_datetime()
+    parsedString = fromAPIString.split("+")[0]
+    fromAPIDate = datetime.strptime(parsedString, "%Y-%m-%d %H:%M:%S %Z")
+    etzDate = timezone("US/Central").localize(fromAPIDate)
+    returnDate = etzDate.strftime("%m/%d/%Y %I:%M %p %Z")
+    return returnDate
 
 def get_price(ticker):
     return float(Share(ticker).get_price())
