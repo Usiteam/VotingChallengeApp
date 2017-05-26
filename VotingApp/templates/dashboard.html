@@ -119,7 +119,7 @@
 
           {% set count = 1 %}
           {% for ticker in stocks %}
-          {% set gain = prices[ticker.ticker]-ticker.startingPrice %}
+          {% set gain = (prices[ticker.ticker]-ticker.startingPrice) %}
 
           <div class="ticker-box">
             <div class="ticker-symbol">
@@ -213,28 +213,29 @@
               <span class="ticker-price">{{prices[ticker.ticker]}}</span>
               <span class="ticker-currency">USD</span>
             </div>
+            {% set todayChange = "%.2f" % changes[ticker.ticker] %}
+            {% set totalChange = "%.2f" % totalGains[ticker.ticker] %}
             <table cellpadding="0" class="change-values">
               <tr>
                 <td class="gain-description">Today</td>
                 {% if changes[ticker.ticker] < 0 %}
-                  <td class="gain-negative">{{changes[ticker.ticker]}}</td>
+                  <td class="gain-negative">{{todayChange}}</td>
                   <td class="gain-negative">{{percentChanges[ticker.ticker]}}</td>
                 {% endif %}
                 {% if changes[ticker.ticker] >= 0 %}
-                  <td class="gain-positive">{{changes[ticker.ticker]}}</td>
+                  <td class="gain-positive">{{todayChange}}</td>
                   <td class="gain-positive">{{percentChanges[ticker.ticker]}}</td>
                 {% endif %}
               </tr>
               <tr>
                   <!-- TODO Need to edit this -->
-                {% set percent = (gain/(ticker.startingPrice)*100)|round(2,'common') %}
                 <td class="gain-description">Total</td>
                 {% if totalPercents[ticker.ticker] < 0 %}
-                  <td class="gain-negative">{{totalGains[ticker.ticker]}}</td>
+                  <td class="gain-negative">{{totalChange}}</td>
                   <td class="gain-negative">{{(totalPercents[ticker.ticker])}}%</td>
                 {% endif %}
                 {% if totalPercents[ticker.ticker] >= 0 %}
-                  <td class="gain-positive">{{totalGains[ticker.ticker]}}</td>
+                  <td class="gain-positive">{{totalChange}}</td>
                   <td class="gain-positive">{{totalPercents[ticker.ticker]}}%</td>
                 {% endif %}
               </tr>
@@ -324,15 +325,16 @@
               <span class="ticker-price">{{ticker.end_price}}</span>
               <span class="ticker-currency">USD</span>
             </div>
+            {% set gainDisplay = "%.2f" % gain %}
             <table cellpadding="0" class="change-values">
               <tr>
                 <td class="gain-description">Total</td>
                 {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') < 0 %}
-                  <td class="gain-negative">{{gain}}</td>
+                  <td class="gain-negative">{{gainDisplay}}</td>
                   <td class="gain-negative">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
                 {% endif %}
                 {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') > 0 %}
-                  <td class="gain-positive">{{gain}}</td>
+                  <td class="gain-positive">{{gainDisplay}}</td>
                   <td class="gain-positive">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
                 {% endif %}
               </tr>

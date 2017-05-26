@@ -183,11 +183,11 @@ def dashboard():
         changes[stock.ticker] = info['gain']
         percentChanges[stock.ticker] = info['percentchange']
         if(stock.short):
-            totalGains[stock.ticker] = (stock.startingPrice - prices[stock.ticker])
+            totalGains[stock.ticker] = float('%.2f' % (stock.startingPrice - prices[stock.ticker]))
             totalPercents[stock.ticker] = round(((stock.startingPrice - prices[stock.ticker])/stock.startingPrice)*100, 2)
             shorts[stock.ticker] = True
         else:
-            totalGains[stock.ticker] = (prices[stock.ticker] - stock.startingPrice)
+            totalGains[stock.ticker] = float('%.2f' % (prices[stock.ticker] - stock.startingPrice))
             totalPercents[stock.ticker] = round(((prices[stock.ticker] - stock.startingPrice)/stock.startingPrice)*100, 2)
             shorts[stock.ticker] = False
     startingPrices = {}
@@ -248,7 +248,7 @@ def get_info(ticker):
 
     # 1: Get price
     # info['price'] = float(rjson[0][u'l'])
-    info['price'] = float(stock.get_price())
+    info['price'] = get_price(ticker)
 
     # 2: Get datetime
     # info['datetime'] = rjson[0][u'lt']
