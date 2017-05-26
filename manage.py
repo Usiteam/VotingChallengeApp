@@ -19,6 +19,7 @@ def initdb():
     db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test", stocks=[google, apple, signet, aal, tesla], roles=[admin]))
     #db.session.add(apple)
     db.session.commit()
+    refreshdb()
     print 'Initialized the database'
 
 @manager.command
@@ -44,9 +45,17 @@ def addstock():
 
     for index in range(1, num_votes + 1):
         if str(ws['B' + str(index)].value) == 'Long':
-            stock = Tickers(ticker=symbol, startingPrice=price, short=False)
+            if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
+                stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
+                print("I FOUND THE STOCK ALREADY")
+            else:
+                stock = Tickers(ticker=symbol, startingPrice=price, short=False)
         elif str(ws['B' + str(index)].value) == 'Short':
-            stock = Tickers(ticker=symbol, startingPrice=price, short=True)
+            if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
+                stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
+                print("I FOUND THE STOCK ALREADY")
+            else:
+                stock = Tickers(ticker=symbol, startingPrice=price, short=True)
 
         if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
             student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()

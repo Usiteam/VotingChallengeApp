@@ -173,6 +173,7 @@ def dashboard():
     trends = {}
     totalGains = {}
     totalPercents = {}
+    shorts = {}
     for stock in current_user.stocks:
         info = get_info(stock.ticker)
         prices[stock.ticker] = info['price']
@@ -184,44 +185,45 @@ def dashboard():
         if(stock.short):
             totalGains[stock.ticker] = (stock.startingPrice - prices[stock.ticker])
             totalPercents[stock.ticker] = round(((stock.startingPrice - prices[stock.ticker])/stock.startingPrice)*100, 2)
+            shorts[stock.ticker] = True
         else:
             totalGains[stock.ticker] = (prices[stock.ticker] - stock.startingPrice)
             totalPercents[stock.ticker] = round(((prices[stock.ticker] - stock.startingPrice)/stock.startingPrice)*100, 2)
+            shorts[stock.ticker] = False
     startingPrices = {}
     for stock in Tickers.query.all():
         startingPrices[stock.ticker] = stock.startingPrice
     exitedStocks = Transactions.query.filter_by(user_id=current_user.id)
     exitedStocksNames = {}
     exitedStockDates = {}
+    exitedGains = {}
     #TODO Have to calculate totalGains and totalPercents for exited stocks
     for stock in exitedStocks:
         info = get_info(stock.ticker)
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
+        exitedGains[stock.ticker] = stock.returns
     if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
         return render_template('dashboard.html', rankings = users_tups, stocks=current_user.stocks, prices=prices,
             names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
-            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
+            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
+            exitedGains = exitedGains)
     else:
         return render_template('dashboard.html', stocks=current_user.stocks, prices=prices,
             names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
-            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents)
+            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
+            exitedGains = exitedGains)
 
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
 
     result = requests.get(url).text.split("// ")
-    print("=================================================")
-    print("TICKER: " + str(ticker))
-    print("HERE IS WHERE THE RESULT IS SUPPOSED TO GO")
-    print(requests.get(url).text.split("// "))
-    print("=================================================")
 
     if len(result) > 1:
         rjson = json.loads(result[1])
@@ -231,8 +233,9 @@ def get_json(ticker):
     return rjson
 
 def get_info(ticker):
-    rjson = get_json(ticker)
+    # rjson = get_json(ticker)
     info = {}
+    stock = Share(ticker)
 
     # 0: Get name
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
@@ -244,28 +247,39 @@ def get_info(ticker):
             info['name'] = truncate(x['name'])
 
     # 1: Get price
-    info['price'] = float(rjson[0][u'l'])
+    # info['price'] = float(rjson[0][u'l'])
+    info['price'] = float(stock.get_price())
 
     # 2: Get datetime
-    info['datetime'] = rjson[0][u'lt']
+    # info['datetime'] = rjson[0][u'lt']
+    info['datetime'] = stock.get_trade_datetime()
 
     # 3: Get gain
-    change = rjson[0][u'c']
-    if change is None:
-        info['gain'] = 0
-    c = change.split("+")
-    if (len(c) > 1):
-        info['gain'] = float(c[1])
-    info['gain'] = float(change)
+    # change = rjson[0][u'c']
+    # if change is None:
+    #     info['gain'] = 0
+    # c = change.split("+")
+    # if (len(c) > 1):
+    #     info['gain'] = float(c[1])
+    # info['gain'] = float(change)
+    info['gain'] = float(stock.get_change())
 
     # 4: Get percent change
-    info['percentchange'] = float(rjson[0][u'cp'])
+    # info['percentchange'] = float(rjson[0][u'cp'])
+    print(stock.get_percent_change())
+    percentChange = stock.get_percent_change()
+    percentChange = percentChange.split("%")[0]
+    if len(percentChange.split("+")) > 1:
+        percentChange = percentChange.split("+")[1]
+    elif len(percentChange.split("-")) > 1:
+        percentChange = percentChange.split("-")[1]
+
+    info['percentchange'] = float(percentChange)
 
     return info
 
 def get_price(ticker):
-    rjson = get_json(ticker)
-    return float(rjson[0][u'l'])
+    return float(Share(ticker).get_price())
 
 def truncate(name):
     if (len(name) > 20):
@@ -296,10 +310,17 @@ def exitPosition(exitIndex):
     """Need to add to transactions table"""
     t = datetime.now()
     today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
+
+    if (exitPosition.short):
+        exitReturn = exitPosition.startingPrice - float(get_price(exitPosition.ticker))
+    else:
+        exitReturn = float(get_price(exitPosition.ticker)) - exitPosition.startingPrice
+
     transaction = Transactions(user_id=current_user.id,
                 ticker=exitPosition.ticker,
                 date=today,
-                end_price = float(get_price(exitPosition.ticker)))
+                end_price = float(get_price(exitPosition.ticker)),
+                returns = exitReturn)
     db.session.add(transaction)
     db.session.commit()
     return redirect(url_for('dashboard'))

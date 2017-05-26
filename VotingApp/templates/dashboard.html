@@ -263,7 +263,7 @@
         <div class="boxes-container">
 
           {% for ticker in exitedStocks %}
-          {% set gain = ticker.end_price - startingPrices[ticker.ticker] %}
+          {% set gain = exitedGains[ticker.ticker] %}
 
           <div class="ticker-box">
             <div class="ticker-symbol">

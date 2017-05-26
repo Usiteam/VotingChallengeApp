@@ -51,7 +51,8 @@ class User(db.Model, UserMixin):
 
 class Tickers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    ticker = db.Column(db.String(5), unique=True)
+    # ticker = db.Column(db.String(5), unique=True)
+    ticker = db.Column(db.String(5))
     startingPrice = db.Column(db.Float)
     short = db.Column(db.Boolean)
     transactions = db.relationship('Transactions', backref='tickers')
@@ -65,6 +66,7 @@ class Transactions(db.Model, UserMixin):
     ticker = db.Column(db.Integer, db.ForeignKey('tickers.id'), nullable=False)
     date = db.Column(db.String)
     end_price = db.Column(db.Integer)
+    returns = db.Column(db.Integer)
 
 # Flask Security
 class Role(db.Model, RoleMixin):
