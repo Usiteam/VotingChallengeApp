@@ -6,3 +6,4 @@ Flask-SQLAlchemy==2.2
 openpyxl==2.4.7
 requests==2.16.0
 yahoo-finance==1.4.0
+gunicorn==19.7.1
