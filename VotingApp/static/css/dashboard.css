@@ -215,6 +215,13 @@ h2{
   justify-content: space-around;
 }
 
+.upload-container{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .page-header{
   color: #1A2930;
   font-size: 30px;
@@ -248,6 +255,10 @@ h2{
   display: flex;
   justify-content: space-around;
   background-color: rgba(192, 192, 192, 0.5);
+}
+
+.form-text-field{
+  padding: 10px;
 }
 
 @media screen and (max-width: 730px) {
