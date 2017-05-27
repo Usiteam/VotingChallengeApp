@@ -1,6 +1,6 @@
 from VotingApp.mainApp import app, db, update_ret, add_stock
 from VotingApp.models import User, Tickers, Role
-from flask.ext.script import Manager, prompt_bool
+from flask_script import Manager, prompt_bool
 from openpyxl import load_workbook, Workbook
 import requests
 
