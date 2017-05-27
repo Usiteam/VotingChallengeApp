@@ -348,12 +348,14 @@ def upload():
     
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
-   if request.method == 'POST':
-      f = request.files['file']
-      f.save(secure_filename(f.filename))
-      print(request)
-      addstock(f.filename, request.form['ticker'], float(request.form['price']))
-      return 'stocks updated'
+    if request.method == 'POST':
+        f = request.files['file']
+        try:
+            f.save(secure_filename(f.filename))
+        except:
+            return 'No file was uploaded.'
+        addstock(f.filename, request.form['ticker'], float(request.form['price']))
+        return redirect('dashboard')
 
 def addstock(name, symbol, price):
     wb = load_workbook(filename=name)
