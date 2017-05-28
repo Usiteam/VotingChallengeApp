@@ -72,7 +72,7 @@ def update_ret(self, stocks, transactions):
 
         if(transTicker.short):
             ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
-        else:    
+        else:
             ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
 
         totalStocks += 1
@@ -111,11 +111,14 @@ def index():
             flash("Incorrect Email or Password")
             #return redirect(url_for('index'))
     elif request.method=='POST' and request.form['btn'] == 'Sign Up':
+        print("IN SIGNUP")
         if validateSignUp():
-            user = User(email=setForm.setEmail.data,
-                        firstName=setForm.firstName.data,
-                        lastName=setForm.lastName.data,
-                        password = setForm.setPassword.data)
+            print("Creating User")
+            user = User(email = setForm.setEmail.data,
+                        firstName = setForm.firstName.data,
+                        lastName = setForm.lastName.data,
+                        password = setForm.setPassword.data,
+                        ret = 0)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index'))
@@ -345,7 +348,7 @@ def loggedin():
 @app.route('/upload')
 def upload():
    return render_template('upload.html')
-    
+
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
