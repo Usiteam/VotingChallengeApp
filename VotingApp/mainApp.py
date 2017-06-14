@@ -277,14 +277,17 @@ def get_info(ticker):
 
     # 4: Get percent change
     # info['percentchange'] = float(rjson[0][u'cp'])
-    percentChange = stock.get_percent_change()
-    percentChange = percentChange.split("%")[0]
-    if len(percentChange.split("+")) > 1:
-        percentChange = percentChange.split("+")[1]
-    elif len(percentChange.split("-")) > 1:
-        percentChange = percentChange.split("-")[1]
+    try:
+        percentChange = stock.get_percent_change()
+        percentChange = percentChange.split("%")[0]
+        if len(percentChange.split("+")) > 1:
+            percentChange = percentChange.split("+")[1]
+        elif len(percentChange.split("-")) > 1:
+            percentChange = percentChange.split("-")[1]
 
-    info['percentchange'] = float(percentChange)
+        info['percentchange'] = float(percentChange)
+    except:
+        info['percentchange'] = stock.get_percent_change()
 
     return info
 
