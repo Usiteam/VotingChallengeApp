@@ -85,6 +85,16 @@ def update_ret(self, stocks, transactions):
     db.session.query(User).filter_by(id=self.id).first().ret = average_ret
     db.session.commit()
 
+    return totalStocks
+
+def update_score(self, ret, numStocks):
+    lever = 20
+    levered_returns = ret * lever
+    coins = numStocks * (1 + levered_returns) 
+
+    db.session.query(User).filter_by(id=self.id).first().score = coins
+    db.session.commit()
+
 def add_stock(self, stock):
     db.session.query(User).filter_by(id=self.id).first().stocks.append(stock)
     db.session.commit()
@@ -213,7 +223,7 @@ def dashboard():
         exitedGains[stock.ticker] = stock.returns
     if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
         return render_template('dashboard.html', isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
-            names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            names = names, score = current_user.score, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
@@ -221,7 +231,7 @@ def dashboard():
             exitedGains = exitedGains)
     else:
         return render_template('dashboard.html', isAdmin=False, stocks=current_user.stocks, prices=prices,
-            names = names, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            names = names, score = current_user.score, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,

@@ -122,6 +122,7 @@
         </div>
 
         {% set totalReturnDisplay = (totalReturn*100)|round(2, 'common') %}
+        {% set scoreDisplay = (score)|round(2, 'common') %}
 
         <div class="stats-box">
           <div class="stats-header">Return</div>
@@ -130,7 +131,7 @@
 
         <div class="stats-box">
           <div class="stats-header">Score</div>
-          <div class="stats-text">0</div>
+          <div class="stats-text">{{scoreDisplay}}</div>
         </div>
       </div>
       

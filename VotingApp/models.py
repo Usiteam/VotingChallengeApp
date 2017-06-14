@@ -24,6 +24,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(80), unique=True)
     password_hash = db.Column(db.String)
     ret = db.Column(db.Float)
+    score = db.Column(db.Float)
     active = db.Column(db.Boolean)
     stocks = db.relationship('Tickers', secondary=ticker_identifier, backref='user')
     transactions = db.relationship('Transactions', backref='user')
