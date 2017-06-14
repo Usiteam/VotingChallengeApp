@@ -338,9 +338,9 @@ def exitPosition(exitIndex):
     user = User.query.filter_by(id=current_user.id).first()
     exitPosition = current_user.stocks[exitIndex-1]
     print()
-    print("TICKER++++++++++++++++++++++++")
-    print(exitPosition.ticker)
-    print("TICKER++++++++++++++++++++++++")
+    print()
+    print("EXIT INDEX: ", exitIndex)
+    print()
     print()
     current_user.stocks.pop(exitIndex-1)
     db.session.commit()
