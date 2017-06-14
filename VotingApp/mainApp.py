@@ -270,7 +270,10 @@ def get_info(ticker):
     # if (len(c) > 1):
     #     info['gain'] = float(c[1])
     # info['gain'] = float(change)
-    info['gain'] = float(stock.get_change())
+    try:
+        info['gain'] = float(stock.get_change())
+    except:
+        info['gain'] = stock.get_change()
 
     # 4: Get percent change
     # info['percentchange'] = float(rjson[0][u'cp'])
