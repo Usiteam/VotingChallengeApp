@@ -148,7 +148,7 @@
 
         <div class="boxes-container">
 
-          {% set count = 1 %}
+          {% set exitCounter = 1 %}
           {% for ticker in stocks %}
           {% set gain = (prices[ticker.ticker]-ticker.startingPrice) %}
 
@@ -219,7 +219,7 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                      <a href="{{url_for('exitPosition', exitIndex=count)}}" >
+                      <a href="{{url_for('exitPosition', exitIndex=exitCounter)}}" >
                         <button type="button" class="btn btn-default">Yes</button>
                       </a>
                     </div>
@@ -274,8 +274,8 @@
             <div class="date-time">{{dates[ticker.ticker]}}</div>
           </div>
 
-          {% set count = count + 1 %}
-          {{count}}
+          {% set exitCounter = exitCounter + 1 %}
+          {{exitCounter}}
           {% endfor %}
 
         </div>
