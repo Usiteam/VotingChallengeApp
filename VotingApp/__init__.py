@@ -34,7 +34,7 @@ app.config.update(
 	MAIL_PORT=465,
 	MAIL_USE_SSL=True,
 	MAIL_USERNAME = 'technology@usiteam.org',
-	MAIL_PASSWORD = 'Dilan.Hira'
+	MAIL_PASSWORD = 'Arjo2323@#'
 	)
 
 mail=Mail(app)
