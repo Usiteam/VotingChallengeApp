@@ -152,24 +152,22 @@
           {% for ticker in stocks %}
           {% set gain = (prices[ticker.ticker]-ticker.startingPrice) %}
 
+
           <div class="ticker-box">
             <div class="ticker-symbol">
               {% set id = ticker.ticker + "Modal" %}
               {% set idLink = "#" + id %}
 
+              <!--
               <a href={{idLink}} class="modal-link" id="modalLink" role="button" data-toggle="modal">{{ticker.ticker}}</a>
 
               <div class="modal fade" id={{id}} role="dialog">
                 <div class="modal-dialog">
 
-                  <!-- Modal content-->
                   <div classd="modal-content">
                     <div class="modal-header">
                       <h4 class="modal-title">{{ticker.ticker}}</h4>
                     </div>
-                    <!-- Placeholder for the graph -->
-                    <!-- {% set url = "http://chart.finance.yahoo.com/z?s=" + ticker.ticker + "&t=6m&q=l&l=on&z=s&p=m50,m200" %}
-                    <img src={{url}} class="stock-graph"> -->
                     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
                     <script id="graph" type="text/javascript">
                       new TradingView.widget({
@@ -187,7 +185,6 @@
                         "hideideas": true
                       });
                     </script>
-                    <!-- Description of the stock (text placeholder) -->
                     <div class="modal-body">
                       <p class="stock-description">Description of stock.</p>
                     </div>
@@ -198,6 +195,7 @@
 
                 </div>
               </div>
+              -->
 
               {% set exitId = "exit" + ticker.ticker + "Modal" %}
               {% set exitIdLink = "#" + exitId %}
