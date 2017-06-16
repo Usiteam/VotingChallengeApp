@@ -26,6 +26,7 @@ class User(db.Model, UserMixin):
     ret = db.Column(db.Float)
     score = db.Column(db.Float)
     active = db.Column(db.Boolean)
+    abstains = db.Column(db.Integer)
     stocks = db.relationship('Tickers', secondary=ticker_identifier, backref='user')
     transactions = db.relationship('Transactions', backref='user')
     #required for Flask-Security

@@ -87,13 +87,13 @@ def update_ret(self, stocks, transactions):
 
     return totalStocks
 
-def update_score(self, ret, numStocks):
+def update_score(self, ret, numStocks, abstains):
     if ret == 0:
         coins = 0
     else:
         lever = 20
         levered_returns = ret * lever
-        coins = numStocks * (1 + levered_returns) 
+        coins = (numStocks + abstains) * (1 + levered_returns) 
 
     db.session.query(User).filter_by(id=self.id).first().score = coins
     db.session.commit()
@@ -404,6 +404,9 @@ def addstock(name, symbol, price):
                 stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
+        elif str(ws['B' + str(index)].value == 'Abstain':
+            if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
+                User.query.filter_by(email=str(ws['A'+str(index)].value)).first().abstains += 1
 
         if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
             student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
