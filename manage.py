@@ -33,7 +33,7 @@ def dropdb():
 def refreshdb():
     for student in User.query.all():
         numStocks = update_ret(student, student.stocks, student.transactions)
-        update_score(student, student.ret, numStocks, student.abstains)
+        update_score(student, student.ret, numStocks)
 
 @manager.command
 def addstock():

@@ -33,8 +33,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-def sort_users_by_return(item):
-    return item.ret
+def sort_users_by_score(item):
+    return item.score
 
 def get_json(ticker):
     url = "https://www.google.com/finance/info?q=NSE:{}".format(ticker)
@@ -87,14 +87,15 @@ def update_ret(self, stocks, transactions):
 
     return totalStocks
 
-def update_score(self, ret, numStocks, abstains):
-    if ret == 0:
+def update_score(self, ret, numStocks):
+    if numStocks == 0:
         coins = 0
     else:
         lever = 20
         levered_returns = ret * lever
-        coins = (numStocks + abstains) * (1 + levered_returns) 
+        coins = numStocks * (1 + levered_returns) 
 
+    print("NUM COINS: ", coins)
     db.session.query(User).filter_by(id=self.id).first().score = coins
     db.session.commit()
 
@@ -172,15 +173,15 @@ def loading():
 def dashboard():
     """Getting Position on Leaderboard"""
     allUsers = User.query.all()
-    returns = {}
+    scores = {}
     for student in allUsers:
-        returns[student.id] = student.ret
+        scores[student.id] = student.score
     "Sorts the dictionary by returns"
-    ret_tups = sorted(returns.items(), key=operator.itemgetter(1), reverse=True)
-    users_tups = sorted(allUsers, key=sort_users_by_return, reverse=True)
+    score_tups = sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
+    users_tups = sorted(allUsers, key=sort_users_by_score, reverse=True)
     "Finds leadboard position"
     standing = 1
-    for userid, ret in ret_tups:
+    for userid, score in score_tups:
         if userid is current_user.id:
             break
         standing += 1
@@ -227,7 +228,7 @@ def dashboard():
         exitedGains[stock.ticker] = stock.returns
     if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
         return render_template('dashboard.html', isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
-            names = names, score = current_user.score, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
@@ -235,7 +236,7 @@ def dashboard():
             exitedGains = exitedGains)
     else:
         return render_template('dashboard.html', isAdmin=False, stocks=current_user.stocks, prices=prices,
-            names = names, score = current_user.score, totalReturn=returns[current_user.id], standing=standing, startingPrices=startingPrices,
+            names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
             lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
@@ -394,23 +395,34 @@ def addstock(name, symbol, price):
     index = 1
 
     while ws['A' + str(index)].value:
-        if str(ws['B' + str(index)].value) == 'Long':
+        choice = str(ws['B' + str(index)].value)
+        if choice == 'Long':
             if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=False)
-        elif str(ws['B' + str(index)].value) == 'Short':
+        elif choice == 'Short':
             if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
-        elif str(ws['B' + str(index)].value == 'Abstain':
-            if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
-                User.query.filter_by(email=str(ws['A'+str(index)].value)).first().abstains += 1
+        elif choice == 'Abstain':
+            if User.query.filter_by(email=str(ws['A'+str(index)].value)).first() != None:
+                student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+                t = datetime.now()
+                today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
+                transaction = Transactions(user_id=student.id,
+                                           ticker=symbol,
+                                           date=today,
+                                           end_price = float(get_price(symbol)),
+                                           returns = 0)
+                db.session.add(transaction)
+                db.session.commit()
 
-        if User.query.filter_by(email=str(ws['A'+str(index)].value)) != None:
-            student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
-            add_stock(student, stock)
+        if choice == 'Long' or choice == 'Short':
+            if User.query.filter_by(email=str(ws['A'+str(index)].value)).first() != None:
+                student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+                add_stock(student, stock)
 
         index += 1
 
