@@ -131,7 +131,8 @@ def index():
                         firstName = setForm.firstName.data,
                         lastName = setForm.lastName.data,
                         password = setForm.setPassword.data,
-                        ret = 0)
+                        ret = 0,
+                        score = 0)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index'))
