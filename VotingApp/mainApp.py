@@ -393,13 +393,11 @@ def addstock(name, symbol, price):
         if str(ws['B' + str(index)].value) == 'Long':
             if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
-                print("I FOUND THE STOCK ALREADY")
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=False)
         elif str(ws['B' + str(index)].value) == 'Short':
             if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
-                print("I FOUND THE STOCK ALREADY")
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
 
