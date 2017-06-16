@@ -426,6 +426,28 @@ def addstock(name, symbol, price):
 
         index += 1
 
+@app.route('/role', methods = ['POST'])
+def change_role():
+    if request.method == 'POST':
+        email = str(request.form['email'])
+        role = str(request.form['newrole'])
+        new_role(email, role)
+        return redirect('dashboard')
+
+def new_role(address, newrole):
+    if User.query.filter_by(email=address).first() != None:
+        student = User.query.filter_by(email=address).first()
+        if Role.query.filter_by(name=newrole).first() != None:
+            role = Role.query.filter_by(name=newrole).first()
+        else:
+            role = Role(name=newrole, description="")
+
+        if len(student.roles) > 0:
+            student.roles[0] = role
+        else:
+            student.roles.append(role)
+            
+        db.session.commit()    
 
 if __name__ == '__main__':
     app.run(debug=True)
