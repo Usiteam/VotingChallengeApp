@@ -88,9 +88,12 @@ def update_ret(self, stocks, transactions):
     return totalStocks
 
 def update_score(self, ret, numStocks):
-    lever = 20
-    levered_returns = ret * lever
-    coins = numStocks * (1 + levered_returns) 
+    if ret == 0:
+        coins = 0
+    else:
+        lever = 20
+        levered_returns = ret * lever
+        coins = numStocks * (1 + levered_returns) 
 
     db.session.query(User).filter_by(id=self.id).first().score = coins
     db.session.commit()
