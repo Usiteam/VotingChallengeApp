@@ -262,7 +262,7 @@ def get_info(ticker):
 
     # 0: Get name
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
-
+    print("Ticker: ", ticker)
     result = requests.get(url).json()
 
     for x in result['ResultSet']['Result']:
