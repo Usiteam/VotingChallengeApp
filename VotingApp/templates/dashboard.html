@@ -41,7 +41,9 @@
         <ul class="dropdown-menu pull-right">
           <li><a href="{{url_for('logout')}}">Logout</a></li>
           <li><a href="{{ url_for_security('forgot_password')}}">Change Password</a></li>
+          {% if isAdmin %}
           <li><a data-toggle="collapse" data-target="#admin">Admin Tools</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>
