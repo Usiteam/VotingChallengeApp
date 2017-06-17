@@ -430,7 +430,7 @@ def addstock(name, symbol, price):
 def change_role():
     if request.method == 'POST':
         email = str(request.form['email'])
-        role = str(request.form['newrole'])
+        role = str(request.form['newrole']).title()
         new_role(email, role)
         return redirect('dashboard')
 
