@@ -174,8 +174,10 @@ def dashboard():
     """Getting Position on Leaderboard"""
     allUsers = User.query.all()
     scores = {}
+    emails = []
     for student in allUsers:
         scores[student.id] = student.score
+        emails.append(student.email)
     "Sorts the dictionary by returns"
     score_tups = sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
     users_tups = sorted(allUsers, key=sort_users_by_score, reverse=True)
@@ -227,7 +229,7 @@ def dashboard():
         exitedStockDates[stock.ticker] = info['datetime']
         exitedGains[stock.ticker] = stock.returns
     if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
-        return render_template('dashboard.html', isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
+        return render_template('dashboard.html', emails = emails, isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
             names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
