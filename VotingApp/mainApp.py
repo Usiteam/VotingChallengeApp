@@ -175,7 +175,6 @@ def validateSignUp():
         ok = False
     return ok
 
-
 @app.route('/logout')
 def logout():
     logout_user()
@@ -281,7 +280,7 @@ def get_info(ticker):
 
     try:
         stock = Share(ticker)
-        
+
         # 0: Get name
         url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
         print("Ticker: ", ticker)
