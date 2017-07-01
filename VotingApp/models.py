@@ -65,7 +65,7 @@ class Tickers(db.Model):
     ticker = db.Column(db.String(5))
     startingPrice = db.Column(db.Float)
     short = db.Column(db.Boolean)
-    transactions = db.relationship('Transactions', backref='tickers')
+    #transactions = db.relationship('Transactions', backref='tickers')
     #user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     def __repr__(self):
         return "<Ticker '{}'>".format(self.ticker)
