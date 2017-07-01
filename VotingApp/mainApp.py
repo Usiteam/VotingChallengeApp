@@ -215,7 +215,7 @@ def dashboard():
     totalPercents = {}
     shorts = {}
     for stock in current_user.stocks:
-        info = get_info(stock.ticker)
+        info = get_info_server(stock.ticker)
         prices[stock.ticker] = info['price']
         names[stock.ticker] = info['name']
         dates[stock.ticker] = info['datetime']
@@ -241,7 +241,7 @@ def dashboard():
     exitedGains = {}
     #TODO Have to calculate totalGains and totalPercents for exited stocks
     for stock in exitedStocks:
-        info = get_info(stock.ticker)
+        info = get_info_server(stock.ticker)
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
         exitedGains[stock.ticker] = stock.returns
@@ -282,6 +282,26 @@ def get_json(ticker):
         rjson = json.loads(result)
 
     return rjson
+
+def get_info_server(ticker):
+
+    info = {}
+
+    if db.session.query(Stock).filter_by(ticker = ticker).count() > 0:
+        found_stock = db.session.query(Stock).filter_by(ticker = ticker).first()
+        info['name'] = found_stock.name
+        info['price'] = found_stock.price
+        info['datetime'] = found_stock.datetime
+        info['gain'] = found_stock.change
+        info['percentchange'] = found_stock.percentChange
+    else:
+        info['name'] = "N/A"
+        info['price'] = 0.00
+        info['datetime'] = "N/A"
+        info['gain'] = 0.00
+        info['percentchange'] = 0.00
+
+    return info    
 
 def get_info(ticker):
     # rjson = get_json(ticker)
