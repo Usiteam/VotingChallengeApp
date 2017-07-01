@@ -245,16 +245,25 @@ def dashboard():
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
         exitedGains[stock.ticker] = stock.returns
-    if len(current_user.roles) > 0 and current_user.roles[0].name == 'Admin':
-        return render_template('dashboard.html', emails = emails, isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
-            names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
-            exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
-            numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
-            lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
-            changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
-            exitedGains = exitedGains)
+    if len(current_user.roles) > 0 and (current_user.roles[0].name == 'Officer' or current_user.roles[0].name=='Admin'):
+        if current_user.roles[0].name == 'Admin':
+            return render_template('dashboard.html', emails = emails, isOfficer = False, isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
+                names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
+                exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
+                numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
+                lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
+                changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
+                exitedGains = exitedGains)
+        else:
+            return render_template('dashboard.html', emails = emails, isOfficer = True, isAdmin=False, rankings = users_tups, stocks=current_user.stocks, prices=prices,
+                names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
+                exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
+                numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
+                lastName = current_user.lastName, dates = dates, exitedStockDates = exitedStockDates,
+                changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
+                exitedGains = exitedGains)
     else:
-        return render_template('dashboard.html', isAdmin=False, stocks=current_user.stocks, prices=prices,
+        return render_template('dashboard.html', isOfficer=False, isAdmin=False, stocks=current_user.stocks, prices=prices,
             names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,

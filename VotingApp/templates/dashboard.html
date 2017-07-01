@@ -41,6 +41,10 @@
         <ul class="dropdown-menu pull-right">
           <li><a href="{{url_for('logout')}}">Logout</a></li>
           <!-- <li><a href="{{url_for_security('forgot_password')}}">Change Password</a></li> -->
+          {% if isOfficer %}
+          <li style="padding-left: 10px;"><strong>Officer Tools</strong></li>
+          <li><a data-toggle="collapse" data-target="#rankings">View Rankings</a></li>
+          {% endif %}
           {% if isAdmin %}
           <li style="padding-left: 10px;"><strong>Admin Tools</strong></li>
           <li><a data-toggle="collapse" data-target="#rankings">View Rankings</a></li>
@@ -150,6 +154,7 @@
               <select name="newrole" style="margin-left: 10px;">
                 <option value="Admin">Admin</option>
                 <option value="Member">Member</option>
+                <option value="Officer">Officer</option>
               </select>
             </div>
             <div style="display:flex; justify-content:center">
