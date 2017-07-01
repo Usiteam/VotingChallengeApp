@@ -42,7 +42,10 @@
           <li><a href="{{url_for('logout')}}">Logout</a></li>
           <li><a href="{{ url_for_security('forgot_password')}}">Change Password</a></li>
           {% if isAdmin %}
-          <li><a data-toggle="collapse" data-target="#admin">Admin Tools</a></li>
+          <li style="padding-left: 10px;"><strong>Admin Tools</strong></li>
+          <li><a data-toggle="collapse" data-target="#rankings">View Rankings</a></li>
+          <li><a data-toggle="collapse" data-target="#addstock">Add a Stock</a></li>
+          <li><a data-toggle="collapse" data-target="#rolemanager">Manage User Roles</a></li>
           {% endif %}
         </ul>
       </div>
@@ -50,7 +53,7 @@
 
     <div class="page-header">Voting Challenge Dashboard</div>
 
-    <div id="admin" class="collapse">
+    <div id="rankings" class="collapse">
 
     <!-- Total Returns -->
     {% if rankings %}
@@ -84,7 +87,11 @@
 
     {% endif %}
 
+    </div>
+
     <!-- ADD A STOCK -->
+
+    <div id="addstock" class="collapse">
 
     {% if isAdmin %}
 
@@ -115,7 +122,11 @@
     {% endif %}
 
 
+    </div>
+
     <!-- GIVE ADMIN PERMISSION -->
+
+    <div id="rolemanager" class="collapse">
 
     {% if isAdmin %}
 

@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from models import User, Tickers, Transactions, Role
+from models import User, Tickers, Transactions, Role, Stock
 from VotingApp import db, app, login_manager, mail
 from yahoo_finance import Share
 from pytz import timezone
@@ -32,6 +32,24 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # TODO dont know if we need this line, I don't have roles
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
+
+def create_stock_info(stock):
+    info = get_info(stock.ticker)
+
+    if db.session.query(Stock).filter_by(ticker = stock.ticker).count() > 0:
+        found_stock = db.session.query(Stock).filter_by(ticker = stock.ticker).first()
+        found_stock.name = info['name']
+        found_stock.price = info['price']
+        found_stock.datetime = info['datetime']
+        found_stock.change = info['gain']
+        found_stock.percentChange = info['percentchange']
+        print("I updated the info for: ", stock.ticker)
+    else:
+        new_stock = Stock(ticker = stock.ticker, name = info['name'], price = info['price'], datetime = info['datetime'], change = info['gain'], percentChange = info['percentchange'])
+        db.session.add(new_stock)
+        print("I added the info for: ", stock.ticker)
+
+    db.session.commit()
 
 def sort_users_by_score(item):
     return item.score
@@ -260,53 +278,86 @@ def get_json(ticker):
 def get_info(ticker):
     # rjson = get_json(ticker)
     info = {}
-    stock = Share(ticker)
 
-    # 0: Get name
-    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
-    print("Ticker: ", ticker)
-    result = requests.get(url).json()
-
-    for x in result['ResultSet']['Result']:
-        if x['symbol'] == ticker:
-            info['name'] = truncate(x['name'])
-
-    # 1: Get price
-    # info['price'] = float(rjson[0][u'l'])
-    info['price'] = get_price(ticker)
-
-    # 2: Get datetime
-    # info['datetime'] = rjson[0][u'lt']
-    info['datetime'] = getdatetime(ticker)
-
-    # 3: Get gain
-    # change = rjson[0][u'c']
-    # if change is None:
-    #     info['gain'] = 0
-    # c = change.split("+")
-    # if (len(c) > 1):
-    #     info['gain'] = float(c[1])
-    # info['gain'] = float(change)
-    change = stock.get_change()
-
-    if change is None:
-        info['gain'] = 0
-    else:
-        info['gain'] = float(stock.get_change())
-
-    # 4: Get percent change
-    # info['percentchange'] = float(rjson[0][u'cp'])
     try:
-        percentChange = stock.get_percent_change()
-        percentChange = percentChange.split("%")[0]
-        if len(percentChange.split("+")) > 1:
-            percentChange = percentChange.split("+")[1]
-        elif len(percentChange.split("-")) > 1:
-            percentChange = percentChange.split("-")[1]
+        stock = Share(ticker)
+        
+        # 0: Get name
+        url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
+        print("Ticker: ", ticker)
+        result = requests.get(url).json()
 
-        info['percentchange'] = float(percentChange)
+        for x in result['ResultSet']['Result']:
+            if x['symbol'] == ticker:
+                info['name'] = truncate(x['name'])
+
+        if info['name'] == "" or info['name'] == None:
+            raise ValueError('Did not obtain a real value!')
+
+
+        # 1: Get price
+        # info['price'] = float(rjson[0][u'l'])
+        info['price'] = get_price(ticker)
+
+        if info['price'] == 0 or info['price'] == None:
+            raise ValueError('Did not obtain a real value!')
+
+        # 2: Get datetime
+        # info['datetime'] = rjson[0][u'lt']
+        info['datetime'] = getdatetime(ticker)
+
+        if info['datetime'] == "" or info['datetime'] == None:
+            raise ValueError('Did not obtain a real value!')
+
+        # 3: Get gain
+        # change = rjson[0][u'c']
+        # if change is None:
+        #     info['gain'] = 0
+        # c = change.split("+")
+        # if (len(c) > 1):
+        #     info['gain'] = float(c[1])
+        # info['gain'] = float(change)
+        change = stock.get_change()
+
+        if change is None:
+            info['gain'] = 0
+        else:
+            info['gain'] = float(stock.get_change())
+
+        if info['gain'] == None:
+            raise ValueError('Did not obtain a real value!')
+
+        # 4: Get percent change
+        # info['percentchange'] = float(rjson[0][u'cp'])
+        try:
+            percentChange = stock.get_percent_change()
+            percentChange = percentChange.split("%")[0]
+            if len(percentChange.split("+")) > 1:
+                percentChange = percentChange.split("+")[1]
+            elif len(percentChange.split("-")) > 1:
+                percentChange = percentChange.split("-")[1]
+
+            info['percentchange'] = float(percentChange)
+        except:
+            info['percentchange'] = stock.get_percent_change()
+
+        if info['percentchange'] == None:
+            raise ValueError('Did not obtain a real value!')
+
     except:
-        info['percentchange'] = stock.get_percent_change()
+        if db.session.query(Stock).filter_by(ticker = ticker).count() > 0:
+            found_stock = db.session.query(Stock).filter_by(ticker = ticker).first()
+            info['name'] = found_stock.name
+            info['price'] = found_stock.price
+            info['datetime'] = found_stock.datetime
+            info['gain'] = found_stock.change
+            info['percentchange'] = found_stock.percentChange
+        else:
+            info['name'] = "N/A"
+            info['price'] = 0.00
+            info['datetime'] = "N/A"
+            info['gain'] = 0.00
+            info['percentchange'] = 0.00
 
     return info
 

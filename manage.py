@@ -1,5 +1,5 @@
-from VotingApp.mainApp import app, db, update_ret, add_stock, update_score
-from VotingApp.models import User, Tickers, Role
+from VotingApp.mainApp import app, db, update_ret, add_stock, update_score, create_stock_info
+from VotingApp.models import User, Tickers, Role, Transactions
 from flask_script import Manager, prompt_bool
 from openpyxl import load_workbook, Workbook
 import requests
@@ -31,9 +31,17 @@ def dropdb():
 
 @manager.command
 def refreshdb():
+    # Refresh the score and ranks for each student
     for student in User.query.all():
         numStocks = update_ret(student, student.stocks, student.transactions)
         update_score(student, student.ret, numStocks)
+
+    # Refresh the stored information for each stock
+    for stock in Tickers.query.all():
+        create_stock_info(stock)
+    for stock in Transactions.query.all():
+        create_stock_info(stock)
+
 
 @manager.command
 def addstock():

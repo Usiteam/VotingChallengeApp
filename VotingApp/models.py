@@ -17,6 +17,15 @@ roles_users = db.Table('roles_users',
 		db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
 		db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
+class Stock(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(5))
+    name = db.Column(db.String(80))
+    price = db.Column(db.Float)
+    datetime = db.Column(db.String(80))
+    change = db.Column(db.Float)
+    percentChange = db.Column(db.Float)
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(80))
