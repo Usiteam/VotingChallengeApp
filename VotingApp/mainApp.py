@@ -441,7 +441,7 @@ def exitPosition(exitIndex):
         exitReturn = float(get_price(exitPosition.ticker)) - exitPosition.startingPrice
 
     transaction = Transactions(user_id=current_user.id,
-                ticker=str(exitPosition.ticker),
+                ticker=exitPosition.id,
                 date=today,
                 end_price = float(get_price(exitPosition.ticker)),
                 returns = exitReturn)
