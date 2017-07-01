@@ -73,7 +73,7 @@ class Tickers(db.Model):
 class Transactions(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    ticker = db.Column(db.Integer, db.ForeignKey('tickers.id'), nullable=False)
+    ticker = db.Column(db.String(5), db.ForeignKey('tickers.ticker'), nullable=False)
     date = db.Column(db.String)
     end_price = db.Column(db.Integer)
     returns = db.Column(db.Integer)
