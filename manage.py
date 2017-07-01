@@ -45,12 +45,13 @@ def refreshdb():
 
 @manager.command
 def addstock():
-    wb = load_workbook(filename="Workbook1.xlsx")
-    ws = wb.active
-
+    name = str(raw_input("What is the file name? "))
     symbol = str(raw_input("Ticker: "))
     price = int(raw_input("Starting price: $"))
     num_votes = int(raw_input("How many votes were there? "))
+
+    wb = load_workbook(filename=name)
+    ws = wb.active
 
     for index in range(1, num_votes + 1):
         if str(ws['B' + str(index)].value) == 'Long':
