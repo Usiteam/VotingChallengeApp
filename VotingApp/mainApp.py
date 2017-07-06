@@ -18,6 +18,7 @@ from itsdangerous import URLSafeTimedSerializer
 from flask.ext.security import Security, SQLAlchemyUserDatastore, \
     UserMixin, RoleMixin, login_required
 from openpyxl import load_workbook, Workbook
+from sqlalchemy import func
 import ntpath
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -488,8 +489,8 @@ def addstock(name, symbol, price):
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
         elif choice == 'Abstain':
-            if User.query.filter_by(email=str(ws['A'+str(index)].value)).first() != None:
-                student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+            if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
+                student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 t = datetime.now()
                 today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
                 transaction = Transactions(user_id=student.id,
@@ -501,8 +502,8 @@ def addstock(name, symbol, price):
                 db.session.commit()
 
         if choice == 'Long' or choice == 'Short':
-            if User.query.filter_by(email=str(ws['A'+str(index)].value)).first() != None:
-                student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
+            if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
+                student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 add_stock(student, stock)
 
         index += 1
