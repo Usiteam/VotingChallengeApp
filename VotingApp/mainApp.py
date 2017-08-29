@@ -6,7 +6,7 @@ import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User, Tickers, Transactions, Role, Stock
-from VotingApp import db, app, login_manager, mail
+from VotingApp import db, app, login_manager, mail, cipher_suite
 from yahoo_finance import Share
 from pytz import timezone
 from werkzeug import secure_filename
@@ -133,10 +133,8 @@ def index():
     setForm = forms.SignUpForm()
     if request.method=='POST' and request.form['btn'] == 'log in':
         email = form.email.data
-        password = form.password.data
+        password = cipher_suite.encrypt(form.password.data.encode())
         user = User.get_by_email(email)
-        # print(user, sys.stderr)
-        # print(user.password, sys.stderr)
         if user is not None and user.check_password(password):
             login_user(user, False)
             return redirect(url_for('dashboard'))
@@ -435,16 +433,17 @@ def exitPosition(exitIndex):
     """Need to add to transactions table"""
     t = datetime.now()
     today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
+    exitPrice = float(get_info(exitPosition.ticker)['price'])
 
     if (exitPosition.short):
-        exitReturn = exitPosition.startingPrice - float(get_price(exitPosition.ticker))
+        exitReturn = exitPosition.startingPrice - exitPrice
     else:
-        exitReturn = float(get_price(exitPosition.ticker)) - exitPosition.startingPrice
+        exitReturn = exitPrice - exitPosition.startingPrice
 
     transaction = Transactions(user_id=current_user.id,
                 ticker=str(exitPosition.ticker),
                 date=today,
-                end_price = float(get_price(exitPosition.ticker)),
+                end_price = exitPrice,
                 returns = exitReturn)
     db.session.add(transaction)
     db.session.commit()

@@ -1,5 +1,5 @@
 from datetime import datetime
-from VotingApp import db
+from VotingApp import db, cipher_suite
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -49,7 +49,8 @@ class User(db.Model, UserMixin):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        print("HERE IS THE PASSWORD: ", password)
+        return check_password_hash(self.password_hash, cipher_suite.decrypt(password).decode())
 
     @staticmethod
     def get_by_email(email):

@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask.ext.security import Security, SQLAlchemyUserDatastore
 from flask_mail import Mail
-
+from cryptography.fernet import Fernet
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,6 +27,9 @@ login_manager.init_app(app)
 
 # Configure Flask Mail
 mail=Mail(app)
+
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
 
 app.config.update(
 	DEBUG=True,
