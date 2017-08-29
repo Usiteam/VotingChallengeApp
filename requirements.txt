@@ -15,3 +15,4 @@ python-dateutil==1.5
 pytz==2013.7
 SQLAlchemy==1.1.4
 psycopg2==2.7.1
+cryptography==1.9
