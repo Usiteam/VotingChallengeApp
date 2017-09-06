@@ -71,5 +71,19 @@ def addstock():
             student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
             add_stock(student, stock)
 
+@manager.command
+def fixdb():
+    num_students = User.query.count()
+    num_students_wo_id = 1
+    for student in User.query.all():
+        if student.id == None:
+            student.id == num_students + num_students_wo_id
+            num_students_wo_id += 1
+            print("I fixed", student.firstName, "!")
+
+        db.session.commit()
+
 if __name__ == '__main__':
     manager.run()
+
+
