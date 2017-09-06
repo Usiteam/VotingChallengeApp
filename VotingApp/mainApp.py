@@ -518,6 +518,10 @@ def change_role():
 def new_role(address, newrole):
     if User.query.filter_by(email=address).first() != None:
         student = User.query.filter_by(email=address).first()
+        if newrole == 'Delete User':
+            db.session.delete(student)
+            db.session.commit()
+            return
         if Role.query.filter_by(name=newrole).first() != None:
             role = Role.query.filter_by(name=newrole).first()
         else:
