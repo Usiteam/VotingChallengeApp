@@ -38,7 +38,7 @@ app.config.update(
 	MAIL_PORT=465,
 	MAIL_USE_SSL=True,
 	MAIL_USERNAME = 'votingchallenge@usiteam.org',
-	MAIL_PASSWORD = 'votingchallenge2017'
+	MAIL_PASSWORD = 'votingchallenge2016'
 	)
 
 mail=Mail(app)
