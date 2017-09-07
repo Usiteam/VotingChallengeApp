@@ -169,6 +169,9 @@ def validateSignUp():
     if (setForm.setEmail.data)[-10:] != "utexas.edu":
         flash("Must use utexas.edu email")
         ok = False
+    if len(setForm.setPassword.data) < 6:
+        flash("Password must be atleast six characters long")
+        ok = False
     if not setForm.setEmail.data or not setForm.firstName.data or not setForm.lastName.data or not setForm.setPassword.data:
         flash("All fields are required")
         ok = False
