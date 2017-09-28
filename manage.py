@@ -59,7 +59,6 @@ def addstock():
                 print("I FOUND THE STOCK ALREADY")
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
-
         if User.query.filter_by(email=str(ws['A'+str(index)].value).lower()) != None:
             student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
             add_stock(student, stock)
