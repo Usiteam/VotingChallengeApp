@@ -480,17 +480,17 @@ def addstock(name, symbol, price):
 
     while ws['A' + str(index)].value:
         choice = str(ws['B' + str(index)].value)
-        if choice == 'Long':
+        if choice == 'Yes - long':
             if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=False)
-        elif choice == 'Short':
+        elif choice == 'No - short':
             if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
-        elif choice == 'Abstain':
+        elif choice == 'No - no position':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 t = datetime.now()
