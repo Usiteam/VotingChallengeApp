@@ -64,6 +64,11 @@ def addstock():
             add_stock(student, stock)
 
 @manager.command
+def get_stocks():
+    for stock in Tickers.query.all():
+        print("Ticker: ", stock.ticker)
+
+@manager.command
 def fixdb():
     num_students = User.query.count()
     num_students_wo_id = 1
