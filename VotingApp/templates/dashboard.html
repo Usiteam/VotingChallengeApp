@@ -57,6 +57,43 @@
 
     <div class="page-header">Voting Challenge Dashboard</div>
 
+        <!-- ADD A STOCK -->
+
+    <div id="changename">
+
+    {% if needNames %}
+
+      <section class="positions-container">
+
+        <div class="stats-title">
+          <h1>Name</h1>
+        </div>
+
+        <div class="upload-container">
+          <form action = "name" method = "POST" 
+             enctype = "multipart/form-data">
+             <div style="padding:10px; margin:auto; width:50%; display:flex; justify-content: center; align-items: center">
+              First Name<input type="text" name="firstName" style="margin-left:20px"/>
+             </div>
+             <div style="padding:10px; margin:auto; width:50%; display:flex; justify-content: center; align-items: center">
+              Last Name<input type="text" name="lastName" class="upload-text-field" style="margin-left: 20px"/><br>
+            </div>
+            <div style="padding:10px; margin:auto; width:50%; display:flex; justify-content: center; align-items: center">
+              Email<input type="text" name="email" value="{{email}}" class="upload-text-field" style="margin-left: 20px"/><br>
+            </div>
+            <div style="display:flex; justify-content:center">
+              <input type = "submit" style="margin-top: -5px; margin-bottom:10px;">
+            </div>
+          </form>
+        </div>
+
+      </section>
+
+    {% endif %}
+
+
+    </div>
+
     <div id="rankings" class="collapse">
 
     <!-- Total Returns -->

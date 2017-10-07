@@ -10,7 +10,7 @@ manager = Manager(app)
 def initdb():
     db.create_all()
     admin = Role(name="Admin", description="Gets to look at all the rankings.")
-    db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav_jain@utexas.edu", password="test11", roles=[admin]))
+    db.session.add(User(firstName="Arnav", lastName="Jain",email="arnav@utexas.edu", password="test11", roles=[admin]))
     db.session.commit()
     refreshdb()
     print 'Initialized the database'
@@ -35,6 +35,10 @@ def refreshdb():
     for stock in Transactions.query.all():
         create_stock_info(stock)
 
+@manager.command
+def get_user_emails():
+    for user in User.query.all():
+        print(user.email)
 
 @manager.command
 def addstock():
@@ -62,11 +66,6 @@ def addstock():
         if User.query.filter_by(email=str(ws['A'+str(index)].value).lower()) != None:
             student = User.query.filter_by(email=str(ws['A'+str(index)].value)).first()
             add_stock(student, stock)
-
-@manager.command
-def get_stocks():
-    for stock in Tickers.query.all():
-        print("Ticker: ", stock.ticker)
 
 @manager.command
 def fixdb():

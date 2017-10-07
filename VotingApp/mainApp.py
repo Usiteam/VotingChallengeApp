@@ -6,7 +6,7 @@ import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User, Tickers, Transactions, Role, Stock
-from VotingApp import db, app, login_manager, mail, cipher_suite
+from VotingApp import db, app, login_manager, mail, cipher_suite, server
 from yahoo_finance import Share
 from pytz import timezone
 from werkzeug import secure_filename
@@ -19,6 +19,7 @@ from flask.ext.security import Security, SQLAlchemyUserDatastore, \
     UserMixin, RoleMixin, login_required
 from openpyxl import load_workbook, Workbook
 from sqlalchemy import func
+from grampg import PasswordGenerator
 import ntpath
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -33,6 +34,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # TODO dont know if we need this line, I don't have roles
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
+
+passwords = (PasswordGenerator().of().between(4, 5, 'letters')
+                                     .at_least(2, 'numbers')
+                                     .length(7)
+                                     .beginning_with('letters')
+                                     .done())
 
 def create_stock_info(stock):
     info = get_info(stock.ticker)
@@ -247,9 +254,15 @@ def dashboard():
         exitedStocksNames[stock.ticker] = info['name']
         exitedStockDates[stock.ticker] = info['datetime']
         exitedGains[stock.ticker] = stock.returns
+
+    if not current_user.firstName or not current_user.lastName:
+        needNames = True
+    else:
+        needNames = False
+
     if len(current_user.roles) > 0 and (current_user.roles[0].name == 'Officer' or current_user.roles[0].name=='Admin'):
         if current_user.roles[0].name == 'Admin':
-            return render_template('dashboard.html', emails = emails, isOfficer = False, isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
+            return render_template('dashboard.html', email = current_user.email, needNames = needNames, emails = emails, isOfficer = False, isAdmin=True, rankings = users_tups, stocks=current_user.stocks, prices=prices,
                 names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
                 exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
                 numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
@@ -257,7 +270,7 @@ def dashboard():
                 changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
                 exitedGains = exitedGains)
         else:
-            return render_template('dashboard.html', emails = emails, isOfficer = True, isAdmin=False, rankings = users_tups, stocks=current_user.stocks, prices=prices,
+            return render_template('dashboard.html', email = current_user.email, needNames = needNames, emails = emails, isOfficer = True, isAdmin=False, rankings = users_tups, stocks=current_user.stocks, prices=prices,
                 names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
                 exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
                 numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
@@ -265,7 +278,7 @@ def dashboard():
                 changes = changes, percentChanges = percentChanges, totalGains = totalGains, totalPercents = totalPercents,
                 exitedGains = exitedGains)
     else:
-        return render_template('dashboard.html', isOfficer=False, isAdmin=False, stocks=current_user.stocks, prices=prices,
+        return render_template('dashboard.html', email = current_user.email, needNames = needNames, isOfficer=False, isAdmin=False, stocks=current_user.stocks, prices=prices,
             names = names, score = current_user.score, totalReturn=current_user.ret, standing=standing, startingPrices=startingPrices,
             exitedStocks=exitedStocks, exitedStocksNames = exitedStocksNames, numExitedStocks = len(exitedStocksNames),
             numActiveStocks = len(current_user.stocks), firstName = current_user.firstName,
@@ -503,8 +516,17 @@ def addstock(name, symbol, price):
                 db.session.add(transaction)
                 db.session.commit()
 
-        if choice == 'Long' or choice == 'Short':
+        if choice == 'Yes - long' or choice == 'No - short':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
+                student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
+                add_stock(student, stock)
+            else:
+                member = Role(name="Member", description="Just a general user to start off with")
+                password = passwords.generate()
+                db.session.add(User(firstName="", lastName="",email=str(ws['A'+str(index)].value), password=password, roles=[member]))
+                db.session.commit()
+                msg = "Hello,\n\nThank you for being an active participant at USIT's general meetings and voting in the Voting Challenge! Due to lack of previous oversight, we have tightened our security standards for passwords on the Voting Challenge portal and have populated passwords for y'all to use. We highly recommend that you visit vote.texasusit.org/reset to change your password to something more familiar. Below, we have inserted your new temporary password.\n\nEmail: {}\nPassword: {}\n\nThank you,\nUSIT Team".format(str(ws['A'+str(index)].value), password)
+                server.sendmail('votingchallenge@usiteam.org', str(ws['A'+str(index)].value).lower(), msg)
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 add_stock(student, stock)
 
@@ -536,6 +558,24 @@ def new_role(address, newrole):
             student.roles.append(role)
             
         db.session.commit()    
+
+@app.route('/name', methods=['POST'])
+def change_name():
+    if request.method == 'POST':
+        email = str(request.form['email'])
+        firstName = str(request.form['firstName']).title()
+        lastName = str(request.form['lastName']).title()
+        change_name(email, firstName, lastName)
+        return redirect('dashboard')
+
+def change_name(email, firstName, lastName):
+    if User.query.filter_by(email = email).first() != None:
+        student = User.query.filter_by(email=email).first()
+        student.firstName = firstName
+        student.lastName = lastName
+        db.session.commit()
+    else:
+        print("Student was not found for some reason.")
 
 if __name__ == '__main__':
     app.run(debug=True)
