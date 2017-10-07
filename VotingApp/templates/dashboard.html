@@ -116,7 +116,8 @@
               {% set scoreDisplay = user.score|round(2, 'common') %}
               <tr class="admin-rankings-item">
                 <th class="admin-rankings-item-text">{{count}}</th>
-                <th class="admin-rankings-item-text">{{user.firstName}} {{user.lastName}}</th>
+                <!-- <th class="admin-rankings-item-text">{{user.firstName}} {{user.lastName}}</th> -->
+                <th class="admin-rankings-item-text">{{user.email}}</th>
                 <th class="admin-rankings-item-text">{{scoreDisplay}}</th>
               </tr> 
               {% set count = count + 1 %}
