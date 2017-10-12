@@ -40,9 +40,9 @@ passwords = (PasswordGenerator().of().between(4, 5, 'letters')
                                      .length(7)
                                      .beginning_with('letters')
                                      .done())
-def refreshdb():
+def refreshdb(ticker):
     # Refresh the stored information for each stock
-    for stock in Tickers.query.all():
+    for stock in db.session.query(Ticker).filter_by(ticker = ticker)
         create_stock_info(stock)
 
 def create_stock_info(stock):
@@ -537,7 +537,7 @@ def addstock(name, symbol, price):
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 add_stock(student, stock)
 
-        refreshdb()
+        refreshdb(symbol)
         index += 1
 
 @app.route('/role', methods = ['POST'])
