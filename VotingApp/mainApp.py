@@ -41,11 +41,6 @@ passwords = (PasswordGenerator().of().between(4, 5, 'letters')
                                      .beginning_with('letters')
                                      .done())
 def refreshdb():
-    # Refresh the score and ranks for each student
-    for student in User.query.all():
-        numStocks = update_ret(student, student.stocks, student.transactions)
-        update_score(student, student.ret, numStocks)
-
     # Refresh the stored information for each stock
     for stock in Tickers.query.all():
         create_stock_info(stock)
