@@ -462,18 +462,16 @@
             {% set gainDisplay = "%.2f" % gain %}
             <table cellpadding="0" class="change-values">
               <tr>
-                {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') < 0 %}
+                {% if exitedGains[ticker.ticker] == 0 %}
+                  <td class="gain-description">Abstained</td>
+                {% elif (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') < 0 %}
                   <td class="gain-description">Total</td>
                   <td class="gain-negative">{{gainDisplay}}</td>
                   <td class="gain-negative">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
-                {% endif %}
-                {% if (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') > 0 %}
+                {% elif (gain/(startingPrices[ticker.ticker])*100)|round(2,'common') > 0 %}
                   <td class="gain-description">Total</td>
                   <td class="gain-positive">{{gainDisplay}}</td>
                   <td class="gain-positive">{{(gain/(startingPrices[ticker.ticker])*100)|round(2,'common')}}%</td>
-                {% endif %}
-                {%if exitedGains[ticker.ticker] == 0 %}
-                  <td class="gain-description">Abstained</td>
                 {% endif %}
               </tr>
             </table>
