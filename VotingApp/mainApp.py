@@ -44,8 +44,6 @@ def refreshdb():
     # Refresh the stored information for each stock
     for stock in Tickers.query.all():
         create_stock_info(stock)
-    for stock in Transactions.query.all():
-        create_stock_info(stock)
 
 def create_stock_info(stock):
     info = get_info(stock.ticker)
