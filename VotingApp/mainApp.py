@@ -21,6 +21,7 @@ from openpyxl import load_workbook, Workbook
 from sqlalchemy import func
 from grampg import PasswordGenerator
 import ntpath
+from manage 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -40,6 +41,17 @@ passwords = (PasswordGenerator().of().between(4, 5, 'letters')
                                      .length(7)
                                      .beginning_with('letters')
                                      .done())
+def refreshdb():
+    # Refresh the score and ranks for each student
+    for student in User.query.all():
+        numStocks = update_ret(student, student.stocks, student.transactions)
+        update_score(student, student.ret, numStocks)
+
+    # Refresh the stored information for each stock
+    for stock in Tickers.query.all():
+        create_stock_info(stock)
+    for stock in Transactions.query.all():
+        create_stock_info(stock)
 
 def create_stock_info(stock):
     info = get_info(stock.ticker)
@@ -525,11 +537,12 @@ def addstock(name, symbol, price):
                 password = passwords.generate()
                 db.session.add(User(firstName="", lastName="",email=str(ws['A'+str(index)].value), password=password, roles=[member]))
                 db.session.commit()
-                msg = "Hello,\n\nThank you for being an active participant at USIT's general meetings and voting in the Voting Challenge! Due to lack of previous oversight, we have tightened our security standards for passwords on the Voting Challenge portal and have populated passwords for y'all to use. We highly recommend that you visit vote.texasusit.org/reset to change your password to something more familiar. Below, we have inserted your new temporary password.\n\nEmail: {}\nPassword: {}\n\nThank you,\nUSIT Team".format(str(ws['A'+str(index)].value), password)
+                msg = "Hello,\n\nThank you for being an active participant at USIT's general meetings and voting in the Voting Challenge! Since you do not already have an account, we have created an account for you! We highly recommend that you visit vote.texasusit.org/reset to change your password to something more familiar. Below, we have inserted your new temporary password.\n\nEmail: {}\nPassword: {}\n\nThank you,\nUSIT Team".format(str(ws['A'+str(index)].value), password)
                 server.sendmail('votingchallenge@usiteam.org', str(ws['A'+str(index)].value).lower(), msg)
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 add_stock(student, stock)
 
+        refreshdb()
         index += 1
 
 @app.route('/role', methods = ['POST'])
