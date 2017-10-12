@@ -37,6 +37,17 @@ def print_stocks():
             print(transaction.id + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns))
 
 @manager.command
+def delete_transactions():
+    continue_or_not = 'y'
+
+    while continue_or_not == 'y':
+        id = int(input("What is the ID? "))
+        transaction = Transactions.query.filter_by(id = id).first()
+        db.session.delete(transaction)
+        db.session.commit()
+        continue_or_not = str(input("Do you want to continue (y/n)? ")).lower()
+
+@manager.command
 def refreshdb():
     # Refresh the score and ranks for each student
     for student in User.query.all():
