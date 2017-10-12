@@ -25,16 +25,16 @@ def dropdb():
 @manager.command
 def print_stocks():
     for stock in Stock.query.all():
-        print(stock.id + ". Stock: " + stock.ticker + ", " + str(stock.price))
+        print(str(stock.id) + ". Stock: " + stock.ticker + ", " + str(stock.price))
 
     for ticker in Tickers.query.all():
-        print(ticker.id + ". Ticker: " + ticker.ticker + ", " + str(ticker.startingPrice) + ", " + str(ticker.short))
+        print(str(ticker.id) + ". Ticker: " + ticker.ticker + ", " + str(ticker.startingPrice) + ", " + str(ticker.short))
 
     for user in User.query.all():
         for stock in user.stocks:
-            print(stock.id + ". " + user.email + " voted for " + stock.ticker)
+            print(str(stock.id) + ". " + user.email + " voted for " + stock.ticker)
         for transaction in user.transactions:
-            print(transaction.id + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns))
+            print(str(transaction.id) + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns))
 
 @manager.command
 def delete_transactions():
