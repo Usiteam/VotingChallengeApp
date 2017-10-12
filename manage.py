@@ -1,5 +1,5 @@
 from VotingApp.mainApp import app, db, update_ret, add_stock, update_score, create_stock_info
-from VotingApp.models import User, Tickers, Role, Transactions
+from VotingApp.models import User, Tickers, Role, Transactions, Stock
 from flask_script import Manager, prompt_bool
 from openpyxl import load_workbook, Workbook
 import requests
@@ -21,6 +21,14 @@ def dropdb():
         "Are you sure you want to lose all your data"):
         db.drop_all()
         print 'Dropped the database'
+
+@manager.command
+def print_stocks():
+    for stock in Stock.query.all():
+        print("Stock: " + stock.ticker + ", " + str(stock.price))
+
+    for ticker in Tickers.query.all():
+        print("Ticker: " + ticker.ticker + ", " + str(ticker.startingPrice) + ", " + str(ticker.short))
 
 @manager.command
 def refreshdb():
