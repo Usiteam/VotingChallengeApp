@@ -42,7 +42,7 @@ passwords = (PasswordGenerator().of().between(4, 5, 'letters')
                                      .done())
 def refreshdb(ticker):
     # Refresh the stored information for each stock
-    for stock in db.session.query(Ticker).filter_by(ticker = ticker).all():
+    for stock in db.session.query(Tickers).filter_by(ticker = ticker).all():
         create_stock_info(stock)
 
 def create_stock_info(stock):
