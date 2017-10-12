@@ -45,7 +45,7 @@ def delete_transactions():
         transaction = Transactions.query.filter_by(id = id).first()
         db.session.delete(transaction)
         db.session.commit()
-        continue_or_not = str(input("Do you want to continue (y/n)? ")).lower()
+        continue_or_not = str(raw_input("Do you want to continue (y/n)? ")).lower()
 
 @manager.command
 def refreshdb():
