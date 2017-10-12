@@ -107,12 +107,15 @@ def update_ret(self, stocks, transactions):
     for trans in transactions:
         transTicker = Tickers.query.filter_by(ticker=trans.ticker).first()
 
-        if(transTicker.short):
-            ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
-        else:
-            ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
+        if not transTicker is None:
+            if(transTicker.short):
+                ret += (transTicker.startingPrice - trans.end_price)/transTicker.startingPrice
+            else:
+                ret += (trans.end_price - transTicker.startingPrice)/transTicker.startingPrice
 
-        totalStocks += 1
+            totalStocks += 1
+        else:
+            ret += 0
 
     if totalStocks != 0:
         average_ret = ret/totalStocks
