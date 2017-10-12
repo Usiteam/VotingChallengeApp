@@ -21,7 +21,6 @@ from openpyxl import load_workbook, Workbook
 from sqlalchemy import func
 from grampg import PasswordGenerator
 import ntpath
-from manage 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
