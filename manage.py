@@ -39,7 +39,7 @@ def print_stocks():
 @manager.command
 def print_returns():
     for user in User.query.all():
-        print(str(user.email) + " has a return of " + user.ret + "%.")
+        print(str(user.email) + " has a return of " + str(user.ret) + "%.")
 
 @manager.command
 def delete_transactions():
