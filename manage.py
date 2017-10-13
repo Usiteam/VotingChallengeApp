@@ -37,6 +37,11 @@ def print_stocks():
             print(str(transaction.id) + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns))
 
 @manager.command
+def print_returns():
+    for user in User.query.all():
+        print(str(user.email) + " has a return of " + user.ret + "%.")
+
+@manager.command
 def delete_transactions():
     continue_or_not = 'y'
 
