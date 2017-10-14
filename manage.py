@@ -53,6 +53,16 @@ def delete_transactions():
         continue_or_not = str(raw_input("Do you want to continue (y/n)? ")).lower()
 
 @manager.command
+def print_transaction_details():
+    trans_id = int(input("What is the ID? "))
+    transaction = Transactions.query.filter_by(id = trans_id).first()
+    user = User.query.filter_by(id = transaction.user_id).first()
+    print("User: " + user.email)
+    print("Ticker: " + transaction.ticker)
+    print("End price: " + transaction.end_price)
+    print("Return: " + transaction.returns)
+
+@manager.command
 def refreshdb():
     # Refresh the score and ranks for each student
     for student in User.query.all():
