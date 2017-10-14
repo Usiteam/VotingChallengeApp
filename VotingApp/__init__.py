@@ -19,6 +19,8 @@ app.config['SECURITY_RECOVERABLE'] = True
 app.config['SECURITY_REGISTERABLE'] = True
 db = SQLAlchemy(app)
 
+app.config['PYTHONHTTPSVERIFY'] = 0
+
 # Configure authentication
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
