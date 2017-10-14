@@ -59,8 +59,8 @@ def print_transaction_details():
     user = User.query.filter_by(id = transaction.user_id).first()
     print("User: " + user.email)
     print("Ticker: " + transaction.ticker)
-    print("End price: " + transaction.end_price)
-    print("Return: " + transaction.returns)
+    print("End price: " + str(transaction.end_price))
+    print("Return: " + str(transaction.returns))
 
 @manager.command
 def refreshdb():
