@@ -430,8 +430,8 @@ def getdatetime(ticker):
     returnDate = etzDate.strftime("%m/%d/%Y %I:%M %p %Z")
     return returnDate
 
-def get_price(ticker):
-    return float(Share(ticker).get_price())
+# def get_price(ticker):
+#     return float(Share(ticker).get_price())
 
 def truncate(name):
     if (len(name) > 20):
