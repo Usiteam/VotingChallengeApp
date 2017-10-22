@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User, Tickers, Transactions, Role, Stock
 from VotingApp import db, app, login_manager, mail, cipher_suite, server
-from VotingAppChallenge import refreshdb
 from yahoo_finance import Share
 from pytz import timezone
 from werkzeug import secure_filename
@@ -56,6 +55,18 @@ passwords = (PasswordGenerator().of().between(4, 5, 'letters')
 #     # Refresh the stored information for each stock
 #     for stock in db.session.query(Tickers).filter_by(ticker = ticker).all():
 #         create_stock_info(stock)
+
+def refreshdb():
+    # Refresh the score and ranks for each student
+    for student in User.query.all():
+        numStocks = update_ret(student, student.stocks, student.transactions)
+        update_score(student, student.ret, numStocks)
+
+    # Refresh the stored information for each stock
+    for stock in Tickers.query.all():
+        create_stock_info(stock)
+    for stock in Transactions.query.all():
+        create_stock_info(stock)
 
 def create_stock_info(stock):
     info = get_info(stock.ticker)
