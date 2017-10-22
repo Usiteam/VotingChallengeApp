@@ -534,6 +534,7 @@ def addstock(name, symbol, price):
 
     while ws['A' + str(index)].value:
         choice = str(ws['B' + str(index)].value)
+        print("Looking at " + str(ws['A'+str(index)].value) + ".")
         if choice == 'Yes - long':
             if  Tickers.query.filter_by(short = False, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
