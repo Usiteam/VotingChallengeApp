@@ -527,11 +527,13 @@ def addstock(name, symbol, price):
                 stock = Tickers.query.filter_by(short = False, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=False)
+                refreshdb(symbol)
         elif choice == 'No - short':
             if Tickers.query.filter_by(short = True, ticker = symbol).count() > 0:
                 stock = Tickers.query.filter_by(short = True, ticker = symbol).first()
             else:
                 stock = Tickers(ticker=symbol, startingPrice=price, short=True)
+                refreshdb(symbol)
         elif choice == 'No - no position':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
@@ -559,7 +561,6 @@ def addstock(name, symbol, price):
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
                 add_stock(student, stock)
 
-        refreshdb(symbol)
         index += 1
 
 @app.route('/role', methods = ['POST'])
