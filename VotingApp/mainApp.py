@@ -550,7 +550,7 @@ def addstock(name, symbol, price):
         elif choice == 'No - no position':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
-                if Transactions.query.filter_by(user_id = student.id, ticker = symbol).count() == 0:
+                if Transactions.query.filter_by(user_id = student.id, ticker = symbol).first() == None:
                     t = datetime.now()
                     today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
                     transaction = Transactions(user_id=student.id,
