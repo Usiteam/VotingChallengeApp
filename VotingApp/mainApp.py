@@ -550,15 +550,16 @@ def addstock(name, symbol, price):
         elif choice == 'No - no position':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
                 student = User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first()
-                t = datetime.now()
-                today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
-                transaction = Transactions(user_id=student.id,
-                                           ticker=symbol,
-                                           date=today,
-                                           end_price = float(get_price(symbol)),
-                                           returns = 0)
-                db.session.add(transaction)
-                db.session.commit()
+                if Transactions.query.filter_by(user_id = student.id, ticker = symbol).count() == 0:
+                    t = datetime.now()
+                    today = str(t.month) + "/" + str(t.day) + "/" + str(t.year)
+                    transaction = Transactions(user_id=student.id,
+                                               ticker=symbol,
+                                               date=today,
+                                               end_price = float(get_price(symbol)),
+                                               returns = 0)
+                    db.session.add(transaction)
+                    db.session.commit()
 
         if choice == 'Yes - long' or choice == 'No - short':
             if User.query.filter(func.lower(User.email) == func.lower(str(ws['A'+str(index)].value))).first() != None:
