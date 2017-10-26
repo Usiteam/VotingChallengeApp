@@ -32,9 +32,9 @@ def print_stocks():
 
     for user in User.query.all():
         for stock in user.stocks:
-            print(str(stock.id) + ". " + user.email + " voted for " + stock.ticker)
+            print(str(stock.id) + ". " + user.email + " voted for " + stock.ticker + ". Short? " + str(stock.short))
         for transaction in user.transactions:
-            print(str(transaction.id) + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns))
+            print(str(transaction.id) + ". " +  user.email + " took a position on " + transaction.ticker + " with return of " + str(transaction.returns) + ".")
 
 @manager.command
 def print_returns():
