@@ -17,3 +17,4 @@ SQLAlchemy==1.1.4
 psycopg2==2.7.1
 cryptography==1.9
 grampg==0.3.0
+lxml==4.1.1
