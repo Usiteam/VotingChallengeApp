@@ -64,16 +64,16 @@ def print_transaction_details():
 
 @manager.command
 def refreshdb():
+        # Refresh the stored information for each stock
+    for stock in Tickers.query.all():
+        create_stock_info(stock)
+    # for stock in Transactions.query.all():
+    #     create_stock_info(stock)
+        
     # Refresh the score and ranks for each student
     for student in User.query.all():
         numStocks = update_ret(student, student.stocks, student.transactions)
         update_score(student, student.ret, numStocks)
-
-    # Refresh the stored information for each stock
-    for stock in Tickers.query.all():
-        create_stock_info(stock)
-    for stock in Transactions.query.all():
-        create_stock_info(stock)
 
 @manager.command
 def get_user_emails():
