@@ -481,7 +481,12 @@ def getdatetime(ticker):
     return returnDate
 
 def get_price(ticker):
-    return get_info(ticker)['price']
+    urlStock = "http://www.nasdaq.com/symbol/{}".format(ticker)
+    page = requests.get(urlStock)
+    tree = html.fromstring(page.content)
+
+    price = round(float(tree.xpath('//div[@id="qwidget_lastsale"]/text()')[0].split("$")[1]), 2)
+    return price
 
 def truncate(name):
     if (len(name) > 20):
