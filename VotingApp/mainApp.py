@@ -403,10 +403,7 @@ def get_info(ticker):
     # 1: Get price
     # info['price'] = float(rjson[0][u'l'])
     # info['price'] = get_price(ticker)
-    if negative:
-        info['price'] = -1 * price
-    else:
-        info['price'] = price
+    info['price'] = price
 
     if info['price'] == 0 or info['price'] == None:
         raise ValueError('Did not obtain a real value!')
